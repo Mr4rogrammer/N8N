@@ -1,0 +1,304 @@
+{
+  "name": "Pavi Daily Routine Reminder Work Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8-22/1 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1060,
+        -760
+      ],
+      "id": "2710d6ee-60ae-403b-b044-6c39f8c3db72",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appPB1OKHCOGmahGW",
+          "mode": "list",
+          "cachedResultName": "Daily Routine Notification App",
+          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPGd0MiAgeY5cag",
+          "mode": "list",
+          "cachedResultName": "Daily Routines",
+          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW/tblPGd0MiAgeY5cag"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -900,
+        -760
+      ],
+      "id": "a90c3a12-f330-4254-bcc2-dc0344b21dcb",
+      "name": "Fetch Records",
+      "executeOnce": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "E7efy8PcKHMMEouL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "092730d6-9f93-43f2-89ba-2530a055b562",
+              "leftValue": "={{ $json.Hour }}",
+              "rightValue": "={{ $('Schedule Trigger').item.json.Hour }}",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            },
+            {
+              "id": "6515cbb4-af36-4cec-97fb-b4d644003c1b",
+              "leftValue": "={{ $json.isActive }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -740,
+        -760
+      ],
+      "id": "b9d08f7a-c82b-4b66-875c-61c176b13cf5",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appSp8pgRJzAdmSGJ",
+          "mode": "list",
+          "cachedResultName": "Love quotes and emjio",
+          "cachedResultUrl": "https://airtable.com/appSp8pgRJzAdmSGJ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblFwlF4SJh8ps186",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://airtable.com/appSp8pgRJzAdmSGJ/tblFwlF4SJh8ps186"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -580,
+        -760
+      ],
+      "id": "a4703d7b-72b5-424b-aba3-0ce6cd596f0d",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "E7efy8PcKHMMEouL",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst randomIndex = Math.floor(Math.random() * items.length);\nreturn [items[randomIndex]];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -760
+      ],
+      "id": "14cb73ea-a5c5-4927-8e04-3ae3e47288d6",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=Hey *Bro*\n\n*{{ $('Filter').item.json['Routine Name'] }};*\n`{{ $('Filter').item.json['Routine Summary'] }}`\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        -920
+      ],
+      "id": "53aee2f0-cfd4-43f8-92cb-a5ed9ce1f2c4",
+      "name": "sent notification1",
+      "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "dMdjBTa9dA31OyPY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=Hey *Pavi Chellam* 🐰\n\n*{{ $('Filter').item.json['Routine Name'] }};*\n`{{ $('Filter').item.json['Routine Summary'] }}`\n\nWith Love,\n{{ $json.Quote }}\nBy _Your Husband_ {{ $json.Emoji }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4fb729d5-d860-4177-b7e8-8713a721b10a",
+      "name": "sent notification",
+      "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "dMdjBTa9dA31OyPY",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7779820575",
+        "text": "=Hey *Pavi Chellam* 🐰\n\n*{{ $('Filter').item.json['Routine Name'] }};*\n`{{ $('Filter').item.json['Routine Summary'] }}`\n\nWith Love,\n{{ $json.Quote }}\nBy _Your Husband_ {{ $json.Emoji }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        -640
+      ],
+      "id": "f003b7de-ec4b-46da-b8e6-71d3316571b4",
+      "name": "sent notification2",
+      "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "dMdjBTa9dA31OyPY",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Records": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "sent notification1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "sent notification2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sent notification1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "e3534688-96c8-4c5f-8d1f-b1137d2a8e12",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8e7c1dee5283074a9abca6c1fbfe18d6c74bd64871572a94989ce1abaf366f03"
+  },
+  "id": "Etynke5J4Vuw0jv3",
+  "tags": []
+}
