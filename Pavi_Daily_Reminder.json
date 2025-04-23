@@ -1,13 +1,13 @@
 {
-  "name": "Pavi Daily Routine Reminder Work Flow",
+  "name": "Pavi Daily Reminder",
   "nodes": [
     {
       "parameters": {
         "rule": {
           "interval": [
             {
-              "field": "cronExpression",
-              "expression": "0 8-22/1 * * *"
+              "field": "minutes",
+              "minutesInterval": 1
             }
           ]
         }
@@ -15,10 +15,10 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1280,
-        -1020
+        -2060,
+        240
       ],
-      "id": "2710d6ee-60ae-403b-b044-6c39f8c3db72",
+      "id": "36e91642-01f8-4fdf-95a8-fed19cca49a8",
       "name": "Schedule Trigger"
     },
     {
@@ -43,15 +43,15 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        -900,
-        -1020
+        -1400,
+        220
       ],
-      "id": "a90c3a12-f330-4254-bcc2-dc0344b21dcb",
+      "id": "dc11a2ec-50c4-4b09-8987-b516357078a0",
       "name": "Fetch Records",
       "executeOnce": true,
       "credentials": {
         "airtableTokenApi": {
-          "id": "E7efy8PcKHMMEouL",
+          "id": "5wLfpLqJVza48dj4",
           "name": "Airtable Personal Access Token account"
         }
       }
@@ -67,15 +67,15 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        500,
-        -640
+        0,
+        600
       ],
-      "id": "f003b7de-ec4b-46da-b8e6-71d3316571b4",
+      "id": "57cf3f23-d73e-4144-82b2-b6c14b903d78",
       "name": "pavi",
       "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
       "credentials": {
         "telegramApi": {
-          "id": "dMdjBTa9dA31OyPY",
+          "id": "BpCvMqZsMEqsANJ7",
           "name": "Telegram account"
         }
       }
@@ -87,10 +87,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -360,
-        -1020
+        -860,
+        220
       ],
-      "id": "9b598973-e0bd-4f77-8089-14165e419aca",
+      "id": "e8f7d8cb-9665-43b9-9191-fbc7f7050b5f",
       "name": "Loop Over Items"
     },
     {
@@ -100,10 +100,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1100,
-        -1020
+        -1600,
+        220
       ],
-      "id": "455179e8-26b0-4138-8840-f3b75ccc97b0",
+      "id": "a25adc2f-da18-46e5-9a62-1928d165ef10",
       "name": "Get today date and time"
     },
     {
@@ -128,14 +128,14 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        -40,
-        -1020
+        -480,
+        220
       ],
-      "id": "a4703d7b-72b5-424b-aba3-0ce6cd596f0d",
+      "id": "f3ade224-b41e-40f7-a359-77c041c630e3",
       "name": "love quotes",
       "credentials": {
         "airtableTokenApi": {
-          "id": "E7efy8PcKHMMEouL",
+          "id": "5wLfpLqJVza48dj4",
           "name": "Airtable Personal Access Token account"
         }
       }
@@ -147,10 +147,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        260,
-        -1020
+        -240,
+        220
       ],
-      "id": "14cb73ea-a5c5-4927-8e04-3ae3e47288d6",
+      "id": "3bce1b84-599c-487a-9bd3-383e7d587387",
       "name": "random love quotes"
     },
     {
@@ -160,10 +160,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -660,
-        -1020
+        -1160,
+        220
       ],
-      "id": "9a5a807e-f5fc-4167-b513-a838b77aab0f",
+      "id": "38439b24-292c-4c18-a6ce-50c4036b5284",
       "name": "Code"
     },
     {
@@ -173,10 +173,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -20,
-        -1220
+        -520,
+        20
       ],
-      "id": "d3b08243-09a3-449d-9b3a-bfca96593169",
+      "id": "4d12f0b2-2c5c-4b3e-9d10-88b58cd9d595",
       "name": "remove completed events"
     },
     {
@@ -190,15 +190,15 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        500,
-        -1240
+        0,
+        0
       ],
-      "id": "7c8dfec8-2bc9-499a-b7a7-fe537c757df8",
+      "id": "be4c1ac9-c70c-4427-99c1-21ec4b78a5d2",
       "name": "Krishna",
       "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
       "credentials": {
         "telegramApi": {
-          "id": "dMdjBTa9dA31OyPY",
+          "id": "BpCvMqZsMEqsANJ7",
           "name": "Telegram account"
         }
       }
@@ -214,15 +214,15 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        500,
-        -1020
+        0,
+        220
       ],
-      "id": "53aee2f0-cfd4-43f8-92cb-a5ed9ce1f2c4",
+      "id": "dcde1e7d-e190-47e4-9cf4-08b4bd164331",
       "name": "Krishna1",
       "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
       "credentials": {
         "telegramApi": {
-          "id": "dMdjBTa9dA31OyPY",
+          "id": "BpCvMqZsMEqsANJ7",
           "name": "Telegram account"
         }
       }
@@ -249,18 +249,65 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.1,
       "position": [
-        200,
-        -1220
+        -300,
+        20
       ],
-      "id": "d7ddea57-1311-4ff9-91ab-ebda316cdec4",
+      "id": "c9d41ed9-1814-49e5-8eda-3b9949322d63",
       "name": "delete the completed even from db",
       "credentials": {
         "airtableTokenApi": {
-          "id": "E7efy8PcKHMMEouL",
+          "id": "5wLfpLqJVza48dj4",
           "name": "Airtable Personal Access Token account"
         }
       },
       "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn [];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -660,
+        220
+      ],
+      "id": "0f4853a4-2238-491e-a584-ce038cccb4e0",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9c86ef86-904e-4698-bdc7-c3ecfdc79f5d",
+              "leftValue": "={{ $json.Minute }}",
+              "rightValue": "01",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1840,
+        240
+      ],
+      "id": "3e515675-5738-4551-a809-8c1989d76e99",
+      "name": "If"
     }
   ],
   "pinData": {},
@@ -269,7 +316,7 @@
       "main": [
         [
           {
-            "node": "Get today date and time",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -376,11 +423,6 @@
         ]
       ]
     },
-    "Krishna1": {
-      "main": [
-        []
-      ]
-    },
     "delete the completed even from db": {
       "main": [
         [
@@ -389,8 +431,18 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get today date and time",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -398,13 +450,14 @@
   "settings": {
     "executionOrder": "v1",
     "timezone": "Asia/Kolkata",
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
   },
-  "versionId": "20b90b12-0bd8-4eb6-bf71-7a6e696dbbed",
+  "versionId": "fd4217ca-b7b0-4f4b-8f84-82a4c5968c3d",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "8e7c1dee5283074a9abca6c1fbfe18d6c74bd64871572a94989ce1abaf366f03"
+    "instanceId": "b1056d280d49dbe9f682e47cdae4772f57df748b030e6972f2e4dd1995f74900"
   },
-  "id": "Etynke5J4Vuw0jv3",
+  "id": "a4rfsbaqMsQCXw71",
   "tags": []
 }
