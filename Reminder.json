@@ -1,0 +1,617 @@
+{
+  "name": "Reminder",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2420,
+        580
+      ],
+      "id": "4a9335fc-b841-4e6f-8736-fcad082797fe",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appPB1OKHCOGmahGW",
+          "mode": "list",
+          "cachedResultName": "Daily Routine Notification App",
+          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPGd0MiAgeY5cag",
+          "mode": "list",
+          "cachedResultName": "Daily Routines",
+          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW/tblPGd0MiAgeY5cag"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -1760,
+        560
+      ],
+      "id": "2f733c55-1b12-42b2-a4a3-875cbbdfc7f2",
+      "name": "Fetch Records",
+      "executeOnce": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9bPeAvakB1tkDxsW",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7779820575",
+        "text": "=Hey *Pavi Kutty* 🐰\n\n*{{ $('Loop Over Items').item.json['Routine Name'] }};*\n`{{ $('Loop Over Items').item.json['Routine Summary'] }}`\n\nWith Love,\n{{ $json.Quote }}\nBy _Your Husband_ {{ $json.Emoji }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        60
+      ],
+      "id": "24639b4d-81f4-4b0a-a4f1-6e8c35b08e1e",
+      "name": "pavi",
+      "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "GJu08pI3UWbAaaZg",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -860,
+        -200
+      ],
+      "id": "55838bea-ab29-481c-857d-4572ac81dc06",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "function getAsiaTime(timezone = 'Asia/Kolkata') {\n    const now = new Date();\n    const options = {\n        hour: '2-digit',\n        minute: '2-digit',\n        hour12: true,\n        day: '2-digit',\n        month: '2-digit',\n        timeZone: timezone\n    };\n    \n    const formatter = new Intl.DateTimeFormat('en-US', options);\n    const parts = formatter.formatToParts(now);\n\n    const hh = parts.find(p => p.type === 'hour').value;\n    const mm = parts.find(p => p.type === 'minute').value;\n    const ampm = parts.find(p => p.type === 'dayPeriod').value;\n    const date = parts.find(p => p.type === 'day').value;\n    const month = parts.find(p => p.type === 'month').value;\n\n    return { hh, mm, ampm, date, month };\n}\n\nreturn getAsiaTime()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1960,
+        560
+      ],
+      "id": "967d88a9-946f-471f-bd7a-61c3e4320ec9",
+      "name": "Get today date and time"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appSp8pgRJzAdmSGJ",
+          "mode": "list",
+          "cachedResultName": "Love quotes and emjio",
+          "cachedResultUrl": "https://airtable.com/appSp8pgRJzAdmSGJ"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblFwlF4SJh8ps186",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://airtable.com/appSp8pgRJzAdmSGJ/tblFwlF4SJh8ps186"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        -200
+      ],
+      "id": "6dfbf87c-d345-430f-b62d-e5155095c58d",
+      "name": "love quotes",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9bPeAvakB1tkDxsW",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst randomIndex = Math.floor(Math.random() * items.length);\nreturn [items[randomIndex]];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        -200
+      ],
+      "id": "5bb3229a-784c-4783-835d-c7a7743f092d",
+      "name": "random love quotes"
+    },
+    {
+      "parameters": {
+        "jsCode": "let TodayDD = $('Get today date and time').first().json.date\n\nlet ThisMonth = $('Get today date and time').first().json.month\n\nlet currentHr = $('Schedule Trigger').first().json.Hour\n\nlet resultValue = [];\n\n\nconst loveEmojis = [\n    \"❤️\", \"💖\", \"💘\", \"💝\", \"💗\", \"💓\", \"💞\", \"💕\", \"💌\", \"💋\",\n    \"😍\", \"😘\", \"🥰\", \"💏\", \"💑\", \"💍\", \"👩‍❤️‍👨\", \"👩‍❤️‍👩\", \"👨‍❤️‍👨\", \"💬\"\n];\n\n// Function to get a random love emoji from the list\nfunction getRandomLoveEmoji() {\n    const randomIndex = Math.floor(Math.random() * loveEmojis.length);\n    return loveEmojis[randomIndex];\n}\n\n\nfunction getRandomFromString(inputString) {\n    const items = inputString.split('|');\n    const randomIndex = Math.floor(Math.random() * items.length);\n    return items[randomIndex].trim();\n}\n\nfor (const item of $input.all()) {\n  item.json[\"Routine Summary\"] = getRandomFromString(item.json[\"Routine Summary\"]) +\" \" +getRandomLoveEmoji()\n    if(\"Date\" in item.json) {\n      const [year, month, day] = item.json.Date.split(\"-\");\n      if (month == ThisMonth && day == TodayDD && item.json.Hour.includes(currentHr)) {\n        resultValue.push(item)\n      }\n    } else if (item.json.Hour.includes(currentHr)) {\n      resultValue.push(item)\n    }\n  \n}\n\nreturn resultValue\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1520,
+        560
+      ],
+      "id": "0f42c981-76d3-4383-bbb4-beb5ca22ad96",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9c86ef86-904e-4698-bdc7-c3ecfdc79f5d",
+              "leftValue": "={{ $json.Minute }}",
+              "rightValue": "01",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2200,
+        580
+      ],
+      "id": "bf706bc3-3c24-4cee-936b-5336afe70eba",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -900,
+        1260
+      ],
+      "id": "e4e82284-3b96-4518-bc07-6b49a568b623",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "let TodayDD = $('Get today date and time').first().json.date\n\nlet ThisMonth = $('Get today date and time').first().json.month\n\nlet currentHr = $('Schedule Trigger').first().json.Hour\n\nlet resultValue = [];\n\nlet items = $('Fetch Records').all()\n\nfor (const item of items) {\n    if(\"Date\" in item.json) {\n      const [year, month, day] = item.json.Date.split(\"-\");\n      if (month == ThisMonth && day == TodayDD && item.json.Hour.includes(currentHr)) {\n        resultValue.push(item)\n      }\n    } \n  \n}\n\nreturn resultValue\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -580,
+        660
+      ],
+      "id": "cd0cf59f-79c5-4e83-b5bb-7b8e2dddd5aa",
+      "name": "remove completed events1"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=Reminder of   *{{ $('Loop Over Items1').item.json['Routine Name'] }}*   has been successfully sent to pavi.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        1260
+      ],
+      "id": "8dc8fb37-f8cb-4b59-a688-4675434d7c34",
+      "name": "Krishna",
+      "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "GJu08pI3UWbAaaZg",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteRecord",
+        "base": {
+          "__rl": true,
+          "value": "appPB1OKHCOGmahGW",
+          "mode": "list",
+          "cachedResultName": "Daily Routine Notification App",
+          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblPGd0MiAgeY5cag",
+          "mode": "list",
+          "cachedResultName": "Daily Routines",
+          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW/tblPGd0MiAgeY5cag"
+        },
+        "id": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -360,
+        660
+      ],
+      "id": "bf1b4484-cfcd-40b2-a017-2150b8cae813",
+      "name": "delete the completed even from db1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9bPeAvakB1tkDxsW",
+          "name": "Airtable Personal Access Token account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7e652fb9-9dc1-45f2-b4d8-7524725e94c6",
+              "leftValue": "={{ $json['To Whom'] }}",
+              "rightValue": "Pavi",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -540,
+        -180
+      ],
+      "id": "c8c8e683-08f2-4df7-915f-de2dff22be73",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d7049030-f1b5-4a9c-93a2-134e7f12f0bc",
+              "leftValue": "={{ $json['To Whom'] }}",
+              "rightValue": "Krishna",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -460,
+        1260
+      ],
+      "id": "b0a7eef2-805a-4310-9cbb-4ca8c2e17c0d",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 340,
+        "width": 1160,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2520,
+        480
+      ],
+      "id": "fa733199-473f-4157-9e9e-04f3aab4f4f9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "For Krishna\n",
+        "height": 440,
+        "width": 1220,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        1140
+      ],
+      "id": "13b1fa4a-e8e1-450b-b941-7b5831dc1833",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Delete common\n",
+        "height": 340,
+        "width": 720,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        560
+      ],
+      "id": "31d78e4f-fa07-489d-b113-ea8aa1e85e48",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "For Pavi\n",
+        "height": 780,
+        "width": 1440,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        -380
+      ],
+      "id": "404acd74-96d1-403a-9b30-9e983712bfa8",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Records": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "remove completed events1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pavi": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "love quotes": {
+      "main": [
+        [
+          {
+            "node": "random love quotes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "random love quotes": {
+      "main": [
+        [
+          {
+            "node": "pavi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get today date and time": {
+      "main": [
+        [
+          {
+            "node": "Fetch Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get today date and time",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get today date and time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "remove completed events1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remove completed events1": {
+      "main": [
+        [
+          {
+            "node": "delete the completed even from db1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Krishna": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "love quotes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Krishna",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "2b0d6355-0732-4ecc-b1a7-1c5a4d36bb37",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
+  },
+  "id": "wKZi8dSwLLsDTWAs",
+  "tags": []
+}
