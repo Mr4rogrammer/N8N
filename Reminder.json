@@ -76,7 +76,7 @@
       "credentials": {
         "telegramApi": {
           "id": "GJu08pI3UWbAaaZg",
-          "name": "Telegram account"
+          "name": "Reminder Bot API"
         }
       }
     },
@@ -155,7 +155,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let TodayDD = $('Get today date and time').first().json.date\n\nlet ThisMonth = $('Get today date and time').first().json.month\n\nlet currentHr = $('Schedule Trigger').first().json.Hour\n\nlet resultValue = [];\n\n\nconst loveEmojis = [\n    \"❤️\", \"💖\", \"💘\", \"💝\", \"💗\", \"💓\", \"💞\", \"💕\", \"💌\", \"💋\",\n    \"😍\", \"😘\", \"🥰\", \"💏\", \"💑\", \"💍\", \"👩‍❤️‍👨\", \"👩‍❤️‍👩\", \"👨‍❤️‍👨\", \"💬\"\n];\n\n// Function to get a random love emoji from the list\nfunction getRandomLoveEmoji() {\n    const randomIndex = Math.floor(Math.random() * loveEmojis.length);\n    return loveEmojis[randomIndex];\n}\n\n\nfunction getRandomFromString(inputString) {\n    const items = inputString.split('|');\n    const randomIndex = Math.floor(Math.random() * items.length);\n    return items[randomIndex].trim();\n}\n\nfor (const item of $input.all()) {\n  item.json[\"Routine Summary\"] = getRandomFromString(item.json[\"Routine Summary\"]) +\" \" +getRandomLoveEmoji()\n    if(\"Date\" in item.json) {\n      const [year, month, day] = item.json.Date.split(\"-\");\n      if (month == ThisMonth && day == TodayDD && item.json.Hour.includes(currentHr)) {\n        resultValue.push(item)\n      }\n    } else if (item.json.Hour.includes(currentHr)) {\n      resultValue.push(item)\n    }\n  \n}\n\nreturn resultValue\n\n"
+        "jsCode": "let TodayDD = $('Get today date and time').first().json.date\n\nlet ThisMonth = $('Get today date and time').first().json.month\n\nlet currentHr = $('Schedule Trigger').first().json.Hour\n\nlet resultValue = [];\n\n\nconst loveEmojis = [\n    \"❤️\", \"💖\", \"💘\", \"💝\", \"💗\", \"💓\", \"💞\", \"💕\", \"💌\", \"💋\",\n    \"😍\", \"😘\", \"🥰\", \"💏\", \"💑\", \"💍\", \"👩‍❤️‍👨\", \"👩‍❤️‍👩\", \"👨‍❤️‍👨\", \"💬\"\n];\n\n// Function to get a random love emoji from the list\nfunction getRandomLoveEmoji() {\n    const randomIndex = Math.floor(Math.random() * loveEmojis.length);\n    return loveEmojis[randomIndex];\n}\n\n\nfunction getRandomFromString(inputString) {\n    const items = inputString.split('|');\n    const randomIndex = Math.floor(Math.random() * items.length);\n    return items[randomIndex].trim();\n}\n\nfor (const item of $input.all()) {\n  item.json[\"Routine Summary\"] = getRandomFromString(item.json[\"Routine Summary\"]) +\" \" +getRandomLoveEmoji()\n  \n    if(\"Date\" in item.json) {\n      const [year, month, day] = item.json.Date.split(\"-\");\n      if (month == ThisMonth && day == TodayDD && item.json.Hour.includes(currentHr)) {\n        resultValue.push(item)\n      }\n    } else if (item.json.Hour.includes(currentHr)) {\n      resultValue.push(item)\n    }\n  \n}\n\nreturn resultValue\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -229,7 +229,7 @@
     {
       "parameters": {
         "chatId": "1199262493",
-        "text": "=Reminder of   *{{ $('Loop Over Items1').item.json['Routine Name'] }}*   has been successfully sent to pavi.",
+        "text": "=Hey *Bro*\n\n*{{ $json['Routine Name'] }};*\n\n`{{ $json['Routine Summary'] }}`",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -246,7 +246,7 @@
       "credentials": {
         "telegramApi": {
           "id": "GJu08pI3UWbAaaZg",
-          "name": "Telegram account"
+          "name": "Reminder Bot API"
         }
       }
     },
@@ -416,6 +416,92 @@
       ],
       "id": "404acd74-96d1-403a-9b30-9e983712bfa8",
       "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather?lat=12.8439&lon=80.0597&appid=b7955f5c0507816857bf48de459635ed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1320,
+        2320
+      ],
+      "id": "15e322e6-e2b9-4339-a157-a52a7216f618",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "function convertWeatherJsonTempsToCelsius(jsonData) {\n  jsonData.forEach(item => {\n     console.log(item.json.main)\n    if (item.json.main) {\n      console.log(\"coming\")\n      item.json.main.temp = (item.json.main.temp - 273.15).toFixed(2);\n      item.json.main.feels_like = (item.json.main.feels_like - 273.15).toFixed(2);\n      item.json.main.temp_min = (item.json.main.temp_min - 273.15).toFixed(2);\n      item.json.main.temp_max = (item.json.main.temp_max - 273.15).toFixed(2);\n    }\n  });\n\n  return jsonData;\n}\n\n// Example usage:\nconst weather = $input.all()\n\nreturn convertWeatherJsonTempsToCelsius(weather);\n;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        2320
+      ],
+      "id": "93509399-430f-4abd-83f6-7e74265d7978",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "content": "Weather\n",
+        "height": 260,
+        "width": 740
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        2260
+      ],
+      "id": "2eaf4d26-2f3c-4a2b-a600-442c719cdaec",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=Hey bro\n\nLocation : {{ $json.name }}\nWeather : {{ $json.weather[0].main }}\nDescription : {{ $json.weather[0].description }}\nWind Speed : {{ $json.wind.speed }}\nCelsius : {{ $json.main.temp }} °C\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -860,
+        2320
+      ],
+      "id": "975295ef-9f5a-42a7-b84b-cfd39e9040d5",
+      "name": "krishna",
+      "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
+      "credentials": {
+        "telegramApi": {
+          "id": "GJu08pI3UWbAaaZg",
+          "name": "Reminder Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1780,
+        2320
+      ],
+      "id": "bdac8604-9e1f-4155-9c93-b3b4b2c96ab1",
+      "name": "Schedule Trigger1"
     }
   ],
   "pinData": {},
@@ -508,12 +594,12 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Loop Over Items1",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -529,13 +615,7 @@
             "index": 0
           }
         ],
-        [
-          {
-            "node": "Get today date and time",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Loop Over Items1": {
@@ -586,6 +666,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -594,6 +681,46 @@
         [
           {
             "node": "Krishna",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "krishna",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -607,7 +734,7 @@
     "timezone": "Asia/Kolkata",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "2b0d6355-0732-4ecc-b1a7-1c5a4d36bb37",
+  "versionId": "db1e0490-4a0c-4dcc-ba38-fdc58a5b3ce2",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
