@@ -1,0 +1,555 @@
+{
+  "name": "Personal Assitant",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "callback_query",
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -440,
+        -700
+      ],
+      "id": "b8e59e35-2fee-4914-b4eb-6754b79901cc",
+      "name": "Telegram Trigger",
+      "webhookId": "5795fe1c-6562-436f-8cff-2e6743295b13",
+      "credentials": {
+        "telegramApi": {
+          "id": "R8nJZScHqw02haLU",
+          "name": "Mr.4rogrammer bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "c1438829-f1e6-4841-a466-169c012b89f5"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9d178aa3-ef23-4fd2-879a-1cdfb662fbe8",
+                    "leftValue": "={{ $json.callback_query }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -140,
+        -700
+      ],
+      "id": "715802d6-cf6b-48f3-8201-be3c12d69b46",
+      "name": "Message or callback"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "*Choose a Option*",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Gym",
+                    "additionalFields": {
+                      "callback_data": "mr/gym"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        -720
+      ],
+      "id": "b29c8ade-466a-4c8d-a7db-ddc60ddd78b2",
+      "name": "sent list of options",
+      "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
+      "credentials": {
+        "telegramApi": {
+          "id": "R8nJZScHqw02haLU",
+          "name": "Mr.4rogrammer bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
+                    "rightValue": "mr/gym",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "bc7fe7c5-10be-4db6-9252-f4a39512f4a4"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "20e7fdbf-771a-48be-8fae-cdcfe9e4d231",
+      "name": "split the options selected by user"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "*Choose WorkOut ✨*",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "=Abs",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/abs"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Arms",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/arms"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Shoulder",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/shoulders"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Chest",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/chest"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Leg",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/leg"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Back",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/back"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1140,
+        -100
+      ],
+      "id": "15ee59c3-5734-4f70-a98b-bb32eeda336f",
+      "name": "sent gym workout names",
+      "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
+      "credentials": {
+        "telegramApi": {
+          "id": "R8nJZScHqw02haLU",
+          "name": "Mr.4rogrammer bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
+                    "rightValue": "mr/gym",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "bc7fe7c5-10be-4db6-9252-f4a39512f4a4"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "2de8adbe-655b-438e-9210-8cc44b868edb",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
+                    "rightValue": "mr/gym/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        600,
+        -80
+      ],
+      "id": "ac413e06-a095-4185-ac3d-5e7e7ad93fd8",
+      "name": "Gym Data Spliter"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=\nHere's the link to your {{ $json['WorkOur Name'] }} 🔥 workout for today, bro.\n\n{{ $json.Link }}\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1180,
+        320
+      ],
+      "id": "b42b5d65-2c32-427b-b4f5-077c4eec0400",
+      "name": "link gym video links",
+      "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
+      "credentials": {
+        "telegramApi": {
+          "id": "R8nJZScHqw02haLU",
+          "name": "Mr.4rogrammer bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "app6JXg9YPvJJkAed",
+          "mode": "list",
+          "cachedResultName": "Gym",
+          "cachedResultUrl": "https://airtable.com/app6JXg9YPvJJkAed"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblezOv9oEPXaq0M6",
+          "mode": "list",
+          "cachedResultName": "gym link data",
+          "cachedResultUrl": "https://airtable.com/app6JXg9YPvJJkAed/tblezOv9oEPXaq0M6"
+        },
+        "filterByFormula": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        600,
+        320
+      ],
+      "id": "d0ee972d-7f2a-48cd-ad9c-a02ddad7f29e",
+      "name": "Gym Links",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9bPeAvakB1tkDxsW",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nlet resultValue = []\n\nfor (const item of $input.all()) {\n  if (item.json.tag == $('Gym Data Spliter').first().json.callback_query.data) {\n    resultValue.push(item)\n  }\n}\n\nreturn resultValue;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        920,
+        320
+      ],
+      "id": "6d05e514-7c7a-4df4-ba4f-c51b3ce48b0a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "content": "Gym Flow\n",
+        "height": 660,
+        "width": 920
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        520,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "819ae064-c338-46e0-9c92-1ccc282964d3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Main Options",
+        "height": 380,
+        "width": 960
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -520,
+        -820
+      ],
+      "typeVersion": 1,
+      "id": "65ee808a-6f26-4355-8654-5a8951bf022e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Option Spliter",
+        "height": 240,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -300,
+        -140
+      ],
+      "typeVersion": 1,
+      "id": "a5711266-3d60-471e-91bd-335b4ec64d87",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message or callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message or callback": {
+      "main": [
+        [
+          {
+            "node": "sent list of options",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "split the options selected by user",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sent list of options": {
+      "main": [
+        []
+      ]
+    },
+    "split the options selected by user": {
+      "main": [
+        [
+          {
+            "node": "Gym Data Spliter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gym Data Spliter": {
+      "main": [
+        [
+          {
+            "node": "sent gym workout names",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gym Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "link gym video links": {
+      "main": [
+        []
+      ]
+    },
+    "Gym Links": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "link gym video links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "18ac87c8-fc3f-4a01-ad03-cffff2ad358c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
+  },
+  "id": "wS2U7VXMwNEKaf4E",
+  "tags": []
+}
