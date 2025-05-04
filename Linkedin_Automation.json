@@ -1,0 +1,415 @@
+{
+  "name": "Linkedin Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "person": "BQYGc4bH9N",
+        "text": "=💫 {{ $('get random articles').item.json.title }} ⭐\n\n{{ $json.description }}\n\nArticle link : {{ $json.url }}\n\n#AndroidDevelopment #MobileAppDevelopment #AppDevelopment #Programming #SoftwareEngineering #TechCommunity #DeveloperLife #Kotlin #LinkedInDevelopers \n#Mr4rogrammer #isharewhatilearn",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {
+          "title": "={{ $json.description }}",
+          "visibility": "PUBLIC"
+        }
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        280
+      ],
+      "id": "792507fc-f956-4bc7-9c56-80f1078643a1",
+      "name": "LinkedIn",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "TODMZHWKWUyYl0qb",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appt6kHkRkLlUh033",
+          "mode": "list",
+          "cachedResultName": "Linkdin",
+          "cachedResultUrl": "https://airtable.com/appt6kHkRkLlUh033"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbliloartO26TD5TG",
+          "mode": "list",
+          "cachedResultName": "Used Articles",
+          "cachedResultUrl": "https://airtable.com/appt6kHkRkLlUh033/tbliloartO26TD5TG"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -40,
+        -80
+      ],
+      "id": "fa012332-1c95-4460-b1d1-9d54441c9179",
+      "name": "Get List of records used",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9bPeAvakB1tkDxsW",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appt6kHkRkLlUh033",
+          "mode": "list",
+          "cachedResultName": "Linkdin",
+          "cachedResultUrl": "https://airtable.com/appt6kHkRkLlUh033"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbliloartO26TD5TG",
+          "mode": "list",
+          "cachedResultName": "Used Articles",
+          "cachedResultUrl": "https://airtable.com/appt6kHkRkLlUh033/tbliloartO26TD5TG"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('HTTP Request').item.json.id }}",
+            "value": "={{ $('HTTP Request').item.json.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "value",
+              "displayName": "value",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        200,
+        280
+      ],
+      "id": "2d99b3b7-2fcd-46bf-8859-f41e94cb5ae1",
+      "name": "Update the used node",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "9bPeAvakB1tkDxsW",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let values = $input.all().map(item => item.json.value);\n\nreturn [\n    {\n      json: {\n        values: values\n      }\n    }\n  ];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -80
+      ],
+      "id": "72abb016-8f58-4c4c-b492-9ba7a576441a",
+      "name": "map used articls ids"
+    },
+    {
+      "parameters": {
+        "url": "=https://dev.to/api/articles?tag={{ $json.value }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        -80
+      ],
+      "id": "c6712f11-2852-49af-8fb9-235da0e4685c",
+      "name": "fetch articles from Url"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "934a4ab8-bc6b-4d1b-b050-c1f19a03cc9f",
+              "leftValue": "={{ $('map used articls ids').item.json.values }}",
+              "rightValue": "={{ $json.id }}",
+              "operator": {
+                "type": "array",
+                "operation": "notContains",
+                "rightType": "any"
+              }
+            },
+            {
+              "id": "916a778e-02db-442b-9c69-4c53b4f55a87",
+              "leftValue": "={{ $json.language }}",
+              "rightValue": "en",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        -80
+      ],
+      "id": "c49d5db2-d1c9-4444-8fa8-f39197e2a472",
+      "name": "filter only unused Ids"
+    },
+    {
+      "parameters": {
+        "jsCode": "function getRandomValue(list) {\n  const randomIndex = Math.floor(Math.random() * list.length);\n  return list[randomIndex];\n}\nreturn getRandomValue($input.all());"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -80
+      ],
+      "id": "99ef95fb-1dab-4093-beaa-18eb341b7c18",
+      "name": "get random articles"
+    },
+    {
+      "parameters": {
+        "jsCode": "const devToTags = [\n  \"android\",\n  \"androiddev\",\n  \"kotlin\",\n  \"jetpackcompose\",\n  \"mobiledev\",\n  \"mobile\",\n  \"java\",\n  \"oops\"\n];\n\n\nfunction getRandomValuesAsObjects(list, count) {\n  const randomValues = [];\n  for (let i = 0; i < count; i++) {\n    const randomIndex = Math.floor(Math.random() * list.length);\n    randomValues.push({ json: { value: list[randomIndex] } });\n  }\n  return randomValues;\n}\n\nreturn getRandomValuesAsObjects(devToTags, 1);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        -80
+      ],
+      "id": "0b390b7d-8729-48e5-aadc-5aa9da8c7139",
+      "name": "get random tags"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.social_image }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -420,
+        280
+      ],
+      "id": "d25bf5d7-0258-4f07-b0b7-54ace75ef697",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=Linkdin Post Sent Successfully  \n\n{{ $('HTTP Request').item.json.title }}\n\nDb Status Id {{ $json.id }}",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        520,
+        280
+      ],
+      "id": "6b16bc15-8d82-4aa0-9ee2-5a10f070d106",
+      "name": "sent the status",
+      "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
+      "credentials": {
+        "telegramApi": {
+          "id": "R8nJZScHqw02haLU",
+          "name": "Mr.4rogrammer bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9,19 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        -80
+      ],
+      "id": "99c5ed96-4220-46b0-9a2a-628963393894",
+      "name": "Mrng 9 Clock"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get List of records used": {
+      "main": [
+        [
+          {
+            "node": "map used articls ids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update the used node": {
+      "main": [
+        [
+          {
+            "node": "sent the status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "map used articls ids": {
+      "main": [
+        [
+          {
+            "node": "fetch articles from Url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fetch articles from Url": {
+      "main": [
+        [
+          {
+            "node": "filter only unused Ids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter only unused Ids": {
+      "main": [
+        [
+          {
+            "node": "get random articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get random articles": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get random tags": {
+      "main": [
+        [
+          {
+            "node": "Get List of records used",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Update the used node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mrng 9 Clock": {
+      "main": [
+        [
+          {
+            "node": "get random tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "a5fac8bf-be78-4482-8a16-18ab3f4a02d4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
+  },
+  "id": "yF1HNe2ucaE81fNl",
+  "tags": []
+}
