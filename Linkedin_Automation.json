@@ -3,31 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "person": "BQYGc4bH9N",
-        "text": "=💫 {{ $('get random articles').item.json.title }} ⭐\n\n{{ $json.description }}\n\nArticle link : {{ $json.url }}\n\n#AndroidDevelopment #MobileAppDevelopment #AppDevelopment #Programming #SoftwareEngineering #TechCommunity #DeveloperLife #Kotlin #LinkedInDevelopers \n#Mr4rogrammer #isharewhatilearn",
-        "shareMediaCategory": "IMAGE",
-        "additionalFields": {
-          "title": "={{ $json.description }}",
-          "visibility": "PUBLIC"
-        }
-      },
-      "type": "n8n-nodes-base.linkedIn",
-      "typeVersion": 1,
-      "position": [
-        -100,
-        280
-      ],
-      "id": "792507fc-f956-4bc7-9c56-80f1078643a1",
-      "name": "LinkedIn",
-      "credentials": {
-        "linkedInOAuth2Api": {
-          "id": "TODMZHWKWUyYl0qb",
-          "name": "LinkedIn account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "search",
         "base": {
           "__rl": true,
@@ -81,8 +56,8 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $('HTTP Request').item.json.id }}",
-            "value": "={{ $('HTTP Request').item.json.id }}"
+            "id": "={{ $('download image for post').item.json.id }}",
+            "value": "={{ $('download image for post').item.json.id }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -228,22 +203,8 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.social_image }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -420,
-        280
-      ],
-      "id": "d25bf5d7-0258-4f07-b0b7-54ace75ef697",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
         "chatId": "1199262493",
-        "text": "=Linkdin Post Sent Successfully  \n\n{{ $('HTTP Request').item.json.title }}\n\nDb Status Id {{ $json.id }}",
+        "text": "=Linkdin Post Sent Successfully  \n\n{{ $('download image for post').item.json.title }}\n\nDb Status Id {{ $json.id }}",
         "replyMarkup": "inlineKeyboard",
         "additionalFields": {
           "appendAttribution": false
@@ -283,7 +244,76 @@
         -80
       ],
       "id": "99c5ed96-4220-46b0-9a2a-628963393894",
-      "name": "Mrng 9 Clock"
+      "name": "Morning  9 Clock"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.social_image }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -420,
+        280
+      ],
+      "id": "d25bf5d7-0258-4f07-b0b7-54ace75ef697",
+      "name": "download image for post"
+    },
+    {
+      "parameters": {
+        "person": "BQYGc4bH9N",
+        "text": "=💫 {{ $('get random articles').item.json.title }} ⭐\n\n{{ $json.description }}\n\nArticle link : {{ $json.url }}\n\n#AndroidDevelopment #MobileAppDevelopment #AppDevelopment #Programming #SoftwareEngineering #TechCommunity #DeveloperLife #Kotlin #LinkedInDevelopers \n#Mr4rogrammer #isharewhatilearn",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {
+          "title": "={{ $json.description }}",
+          "visibility": "PUBLIC"
+        }
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        280
+      ],
+      "id": "792507fc-f956-4bc7-9c56-80f1078643a1",
+      "name": "make Linkedin post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "TODMZHWKWUyYl0qb",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 📢 Auto-Post Dev.to Articles to LinkedIn with Telegram Alerts\n\nThis n8n workflow automates your LinkedIn posting by fetching articles from [Dev.to](https://dev.to) twice a day (9:00 AM and 7:00 PM), ensuring consistent content sharing without manual effort.\n\nTo prevent duplicates, it stores posted article IDs in Airtable. It also sends a Telegram message after every successful post, so you stay updated.\n\n---\n",
+        "height": 400,
+        "width": 920
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -600
+      ],
+      "id": "c81c749a-e21b-4ba6-beae-2b8a21523c06",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "\n## ✅ Features\n\n- 🕒 Runs twice daily at 9:00 AM and 7:00 PM (customizable)\n- 📰 Fetches latest Dev.to articles by tag\n- 📂 Uses Airtable to avoid reposting the same article\n- 📢 Posts to your LinkedIn profile or company page\n- 📬 Sends a Telegram notification after successful posting\n- ⚙️ Fully customizable schedule, tags, and post format",
+        "height": 240,
+        "width": 580
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -520
+      ],
+      "id": "61171a34-53a3-448a-886c-b0cc83b75b33",
+      "name": "Sticky Note1"
     }
   ],
   "pinData": {},
@@ -347,7 +377,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "download image for post",
             "type": "main",
             "index": 0
           }
@@ -365,33 +395,33 @@
         ]
       ]
     },
-    "LinkedIn": {
-      "main": [
-        [
-          {
-            "node": "Update the used node",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "LinkedIn",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mrng 9 Clock": {
+    "Morning  9 Clock": {
       "main": [
         [
           {
             "node": "get random tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "download image for post": {
+      "main": [
+        [
+          {
+            "node": "make Linkedin post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "make Linkedin post": {
+      "main": [
+        [
+          {
+            "node": "Update the used node",
             "type": "main",
             "index": 0
           }
@@ -405,7 +435,7 @@
     "timezone": "Asia/Kolkata",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "a5fac8bf-be78-4482-8a16-18ab3f4a02d4",
+  "versionId": "9ba9094c-e57a-43ac-8e51-ba97b384bb87",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
