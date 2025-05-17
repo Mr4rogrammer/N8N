@@ -1,0 +1,418 @@
+{
+  "name": "Credit Card Usage",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {
+          "labelIds": [
+            "CATEGORY_UPDATES"
+          ],
+          "q": "from:HDFC Bank InstaAlerts <alerts@hdfcbank.net>"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        -20
+      ],
+      "id": "5895c8a5-1dc7-48aa-8560-6725a4bbb8d5",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "g4tEcIQrZzv1p64p",
+          "name": "Gmail account Krish11022002"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let values = $input.all().map(item => item.json.gmailId);\n\nreturn [\n    {\n      json: {\n        values: values\n      }\n    }\n  ];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -20
+      ],
+      "id": "e027c004-85cb-49f7-a9bd-46873a7843e6",
+      "name": "map used articls ids"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "934a4ab8-bc6b-4d1b-b050-c1f19a03cc9f",
+              "leftValue": "={{ $('map used articls ids').item.json.values }}",
+              "rightValue": "={{ $('Loop Over Items').item.json.id }}",
+              "operator": {
+                "type": "array",
+                "operation": "notContains",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        300,
+        -20
+      ],
+      "id": "bb293c78-a989-4273-98e0-3220e44aa259",
+      "name": "filter only unused Ids"
+    },
+    {
+      "parameters": {
+        "chatId": "7779820575",
+        "text": "=💳 *Transaction Alert*\n\n📅 *Date:* `{{ $json.Date }}`  \n💰 *Amount:* `₹{{ $json.Amount }}`  \n🏷️ *Recipient:* `{{ $json.Recipient }}`  \n🔢 *UPI Reference No:* `{{ $json.UpiReference }}`",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        860,
+        220
+      ],
+      "id": "23746194-0eb7-4eab-92fb-ca77a7526d1f",
+      "name": "sent notification to telegram to pavi",
+      "webhookId": "457dc38a-ddcb-474b-bc81-e7e895cd3a93",
+      "credentials": {
+        "telegramApi": {
+          "id": "GJu08pI3UWbAaaZg",
+          "name": "Reminder Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        -20
+      ],
+      "id": "13332e8c-92cd-4745-9533-c96ec5b480fc",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso",
+          "mode": "list",
+          "cachedResultName": "UPI Usage",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -160,
+        -20
+      ],
+      "id": "956f1fd0-669f-41c8-bcd5-0b150f71fc38",
+      "name": "Google Sheets",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "k6hTpqZXf822XtpQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const message = $('Loop Over Items').first().json.snippet;\n\nconst amountMatch = message.match(/Rs\\.([\\d.,]+)/);\nconst recipientMatch = message.match(/to (.+?) on/);\nconst dateMatch = message.match(/on (\\d{2}-\\d{2}-\\d{2})/);\nconst referenceMatch = message.match(/UPI transaction reference number is (\\d+)/);\n\nconst amount = amountMatch ? amountMatch[1] : null;\nconst recipient = recipientMatch ? recipientMatch[1].trim() : null;\nconst date = dateMatch ? dateMatch[1] : null;\nconst upiReference = referenceMatch ? referenceMatch[1] : null;\n\nconsole.log(\"Amount:\", amount);       // 1260.00\nconsole.log(\"Recipient:\", recipient); // redbus3.payu@hdfcbank REDBUS IN\nconsole.log(\"Date:\", date);           // 16-05-25\n\nreturn [\n    {\n      json: {\n        Amount: amount,\n        Recipient:recipient,\n        Date:date,\n        UpiReference:upiReference\n      }\n    }\n  ];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        -20
+      ],
+      "id": "001a4f40-41bc-4b10-a5e9-186be2f954fa",
+      "name": "Extract the required data from mail"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=💳 *Transaction Alert*\n\n📅 *Date:* `{{ $json.Date }}`  \n💰 *Amount:* `₹{{ $json.Amount }}`  \n🏷️ *Recipient:* `{{ $json.Recipient }}`  \n🔢 *UPI Reference No:* `{{ $json.UpiReference }}`",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        840,
+        -100
+      ],
+      "id": "9e368066-2a66-4a10-a852-8a6811c0f789",
+      "name": "sent notification to telegram to krishna",
+      "webhookId": "457dc38a-ddcb-474b-bc81-e7e895cd3a93",
+      "credentials": {
+        "telegramApi": {
+          "id": "GJu08pI3UWbAaaZg",
+          "name": "Reminder Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso",
+          "mode": "list",
+          "cachedResultName": "UPI Usage",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmailId": "={{ $('Loop Over Items').first().json.id}}",
+            "date": "={{ $('Extract the required data from mail').first().json.Date }}",
+            "Recipient": "={{ $('Extract the required data from mail').first().json.Recipient }}",
+            "amount": "={{ $('Extract the required data from mail').first().json.Amount }}",
+            "upiReference": "={{ $('Extract the required data from mail').first().json.UpiReference }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "gmailId",
+              "displayName": "gmailId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Recipient",
+              "displayName": "Recipient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "upiReference",
+              "displayName": "upiReference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1160,
+        240
+      ],
+      "id": "1f6c1df5-cc69-4038-b9ee-5eca45002d6d",
+      "name": "update the usage in sheet row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "k6hTpqZXf822XtpQ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "map used articls ids": {
+      "main": [
+        [
+          {
+            "node": "filter only unused Ids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter only unused Ids": {
+      "main": [
+        [
+          {
+            "node": "Extract the required data from mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sent notification to telegram to pavi": {
+      "main": [
+        [
+          {
+            "node": "update the usage in sheet row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "map used articls ids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract the required data from mail": {
+      "main": [
+        [
+          {
+            "node": "sent notification to telegram to krishna",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "sent notification to telegram to pavi",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sent notification to telegram to krishna": {
+      "main": [
+        []
+      ]
+    },
+    "update the usage in sheet row": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a6d2ece2-4465-43ea-b1bc-46ecf3dcaad3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
+  },
+  "id": "bk0oFjAq1T2Rzn1g",
+  "tags": []
+}
