@@ -1,0 +1,319 @@
+{
+  "name": "Whatsapp notification Executor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        -120
+      ],
+      "id": "055f2c11-3b29-458a-a62a-2d9a33424261",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "function getAsiaTime(timezone = 'Asia/Kolkata') {\n    const now = new Date();\n    const options = {\n        hour: '2-digit',\n        minute: '2-digit',\n        hour12: true,\n        day: '2-digit',\n        month: '2-digit',\n        timeZone: timezone\n    };\n    \n    const formatter = new Intl.DateTimeFormat('en-US', options);\n    const parts = formatter.formatToParts(now);\n\n    const hh = parts.find(p => p.type === 'hour').value;\n    const mm = parts.find(p => p.type === 'minute').value;\n    const ampm = parts.find(p => p.type === 'dayPeriod').value;\n    const date = parts.find(p => p.type === 'day').value;\n    const month = parts.find(p => p.type === 'month').value;\n\n    return { hh, mm, ampm, date, month };\n}\n\nreturn getAsiaTime()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -120
+      ],
+      "id": "dcab63b0-3b3d-450c-b4e0-f2d7efee0efe",
+      "name": "Get today date and time"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        500,
+        -120
+      ],
+      "id": "e9ad55c7-a628-45f1-b9bd-91125001ef3c",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "=default",
+        "chatId": "=91{{ $('GetData').item.json.To }}",
+        "text": "={{ $('GetData').item.json.Message }}",
+        "requestOptions": {}
+      },
+      "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+      "typeVersion": 202502,
+      "position": [
+        1100,
+        -120
+      ],
+      "id": "f8d1e372-1b1c-4c22-b5ff-e11628ed5d89",
+      "name": "WAHA",
+      "credentials": {
+        "wahaApi": {
+          "id": "haCpXFnyqxQtarEx",
+          "name": "WAHA account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6fd54735-e403-49d5-8856-2a3d7c3273dc",
+              "leftValue": "={{ $('Get today date and time').item.json.hh }}",
+              "rightValue": "={{ $('GetData').item.json.Time.split(\":\").first() }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "8d517bd2-ff3b-4417-ad53-faec8036e20f",
+              "leftValue": "={{ $('Get today date and time').item.json.mm }}",
+              "rightValue": "={{ $('GetData').item.json.Time.split(\":\")[1] }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "81b2c7da-4c7c-4d67-bd31-67c807f1a0ed",
+              "leftValue": "={{ $('Get today date and time').item.json.ampm.toLowerCase() }}",
+              "rightValue": "={{ $('GetData').item.json.Time.split(\":\")[2].toLowerCase() }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a0525706-e8c4-45cc-998e-2068391eb5e4",
+              "leftValue": "={{ $('Get today date and time').item.json.date }}",
+              "rightValue": "={{ $('GetData').item.json.Date.split(\"-\")[0].toLowerCase() }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "74512947-20ce-4e28-8b29-17dd5cf4fe40",
+              "leftValue": "={{ $('Get today date and time').item.json.month }}",
+              "rightValue": "={{ $('GetData').item.json.Date.split(\"-\")[1].toLowerCase() }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        -100
+      ],
+      "id": "db79c925-498f-4659-96dd-5867146d30c9",
+      "name": "check date and time"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc",
+          "mode": "list",
+          "cachedResultName": "Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 139248140,
+          "mode": "list",
+          "cachedResultName": "Whatsapp",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit#gid=139248140"
+        },
+        "startIndex": "={{ $('GetData').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1320,
+        -120
+      ],
+      "id": "b4748009-4d38-4a32-951b-34c48a164eae",
+      "name": "delete",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OOvdkJULy6xh4dvL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc",
+          "mode": "list",
+          "cachedResultName": "Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 139248140,
+          "mode": "list",
+          "cachedResultName": "Whatsapp",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit#gid=139248140"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        180,
+        -120
+      ],
+      "id": "efd5fd51-542d-4ad4-9d3a-eba58b92729c",
+      "name": "GetData",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OOvdkJULy6xh4dvL",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get today date and time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get today date and time": {
+      "main": [
+        [
+          {
+            "node": "GetData",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "check date and time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAHA": {
+      "main": [
+        [
+          {
+            "node": "delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check date and time": {
+      "main": [
+        [
+          {
+            "node": "WAHA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetData": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "0c0d457d-7c64-4961-89ae-492fade1764a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ee7707c1fecfcdb83b60a7259c8c501ea48739fc2145a4f83c8f691b057ce6b6"
+  },
+  "id": "9rQzSApL8VVBself",
+  "tags": []
+}

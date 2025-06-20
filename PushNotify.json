@@ -1,0 +1,929 @@
+{
+  "name": "PushNotify",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "={{ $('Google Cloud Firestore').item.json.telegramChatId }}",
+        "text": "={{ $json.formattedText }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -420,
+        260
+      ],
+      "id": "907d8d3b-a241-4f5b-b548-ae251666c850",
+      "name": "Telegram",
+      "webhookId": "2cdbdc4c-d64f-453a-b525-b482fd3f4c9c",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "2yil05ycndFcTQpP",
+          "name": "PushNotify"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\":{{ $json.status }},\n  \"error\":\"{{ $json.error }}\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        100,
+        300
+      ],
+      "id": "3f7fd795-f736-43de-914d-a3e3dd4b9c45",
+      "name": "error webhook"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"status\": false,\n  \"error\": \"Invalid telegram chat id or the chat is not start Kindly start the chat in telegram [@MrPushNotifybot]\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -100,
+        300
+      ],
+      "id": "d037f070-f03e-46e1-85a9-33ad2e92ca66",
+      "name": "edit error field"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "projectId": "pushnotify-b5ec3",
+        "collection": "=users",
+        "updateKey": "=document_id",
+        "columns": "points"
+      },
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        100
+      ],
+      "id": "d7bd1205-c1f4-4125-b47b-f3b982e6db94",
+      "name": "db update",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "H8xrk6aXLw0zruBk",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Notifications sent successfully\",\n  \"channels\":[\"telegram\"],\n  \"pointsUsed\": 1\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        120
+      ],
+      "id": "9a3af088-aa0f-479b-8c14-5c3a8f554828",
+      "name": "success webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5950d554-92d9-40c8-b41b-4497ad9f67ed",
+              "name": "points",
+              "value": "={{ $('Google Cloud Firestore').item.json.points - 1 }}",
+              "type": "string"
+            },
+            {
+              "id": "97a9b856-aaf7-4fb1-9a6d-8cadbecdb9bf",
+              "name": "document_id",
+              "value": "={{ $('Google Cloud Firestore').item.json._id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -100,
+        100
+      ],
+      "id": "01357910-33e6-47ab-97b1-b31dabd6fc19",
+      "name": "update field"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dad77e74-518e-42d6-9e3a-064632a512a9",
+              "leftValue": "={{ $('Google Cloud Firestore').item.json.notifications.telegram }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -640,
+        500
+      ],
+      "id": "bffef92d-fb5e-4b1e-8aa0-6c1e360ad839",
+      "name": "telegram"
+    },
+    {
+      "parameters": {
+        "operation": "query",
+        "projectId": "pushnotify-b5ec3",
+        "query": "={\n  \"structuredQuery\": {\n    \"from\": [\n      {\n        \"collectionId\": \"users\"\n      }\n    ],\n    \"where\": {\n      \"fieldFilter\": {\n        \"field\": {\n          \"fieldPath\": \"authKey\"\n        },\n        \"op\": \"EQUAL\",\n        \"value\": {\n          \"stringValue\": \"{{ $json.headers['auth-key'] }}\"\n        }\n      }\n    }\n  }\n}\n"
+      },
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        -1460,
+        520
+      ],
+      "id": "13332be6-385d-468f-9609-70a4bdb8fc59",
+      "name": "Google Cloud Firestore",
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "H8xrk6aXLw0zruBk",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "pushNotify",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1640,
+        520
+      ],
+      "id": "174185eb-2ec5-4867-8022-e92570a5cf87",
+      "name": "Webhook",
+      "webhookId": "e451f816-c2a8-4d7c-9b0c-d61873d16fa9"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "let isWhatsappEnabled = $json.notifications.whatsapp;\nlet isEmailEnabled = $json.notifications.email;\nlet isTelegramEnabled = $json.notifications.telegram;\nlet points = parseInt($json.points);\nlet status = false;\n\nlet requiredPoints = 0;\n\nif (isWhatsappEnabled) requiredPoints += 2;\nif (isEmailEnabled) requiredPoints += 2;\nif (isTelegramEnabled) requiredPoints += 1;\n\nif (points >= requiredPoints) {\n  status = true;\n}\n\nreturn {\n  status: status\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1280,
+        520
+      ],
+      "id": "e94ec555-8aaa-453d-8ba9-d5eaba15f898",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b3f76c41-1118-4f5e-b614-2f6bb1550613",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1100,
+        520
+      ],
+      "id": "ef6d9019-5700-47d3-af84-94576bcef95d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\":{{ $json.status }},\n  \"error\":\"{{ $json.error }}\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        -1100,
+        760
+      ],
+      "id": "17e04fa1-69c7-4360-94b3-40ea65d0ab8a",
+      "name": "error webhook1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"status\": false,\n  \"error\": \"Does not have enough points to sent notification\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1280,
+        760
+      ],
+      "id": "507c3378-dca4-4da8-bdb7-c5a33b92cf82",
+      "name": "telegram error1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\":{{ $json.status }},\n  \"error\":\"{{ $json.error }}\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        -240
+      ],
+      "id": "028536a5-0b20-4adf-bb08-3b8ef9498a6d",
+      "name": "error webhook2"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"status\": false,\n  \"error\": \"Invalid email id\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        -240
+      ],
+      "id": "ef874880-8cdc-4910-8316-9d81b536a952",
+      "name": "edit error field1"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "projectId": "pushnotify-b5ec3",
+        "collection": "=users",
+        "updateKey": "=document_id",
+        "columns": "points"
+      },
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        -440
+      ],
+      "id": "e452d579-1bbb-456a-8ad4-38ae4930004a",
+      "name": "db update1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "H8xrk6aXLw0zruBk",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Notifications sent successfully\",\n  \"channels\": [\"email\", \"telegram\"],\n  \"pointsUsed\": 3\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        1160,
+        -420
+      ],
+      "id": "018fd28e-4a23-4034-ac34-da41f2d93983",
+      "name": "success webhook1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5950d554-92d9-40c8-b41b-4497ad9f67ed",
+              "name": "points",
+              "value": "={{ $('Google Cloud Firestore').item.json.points - 1 }}",
+              "type": "string"
+            },
+            {
+              "id": "97a9b856-aaf7-4fb1-9a6d-8cadbecdb9bf",
+              "name": "document_id",
+              "value": "={{ $('Google Cloud Firestore').item.json._id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        -440
+      ],
+      "id": "8423a4af-5b44-4b0a-aad6-78538ce80e61",
+      "name": "update field1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Google Cloud Firestore').item.json.email }}",
+        "subject": "PushNotify",
+        "emailType": "text",
+        "message": "={{ Object.entries($('Webhook').item.json.body).map(([k,v]) => k + \": \" + v).join(\"\\n\") }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        -420
+      ],
+      "id": "a0f0edac-b549-4bdc-b1d9-472635061437",
+      "name": "Gmail",
+      "webhookId": "92ee6708-4228-459f-b17c-4eb3cc3dd151",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "notesInFlow": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YKiTte54wzp18Umy",
+          "name": "tn36king"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d15fdf83-26dc-4fae-9b2f-fcf5fef1ad45",
+              "leftValue": "={{ $('Google Cloud Firestore').item.json.notifications.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        100
+      ],
+      "id": "16a749eb-e60a-483b-b130-95a91dd63272",
+      "name": "check gmail is enabled"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\":{{ $json.status }},\n  \"error\":\"{{ $json.error }}\"\n} \n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        1580,
+        -800
+      ],
+      "id": "b4d1a8c9-63c4-474d-8fa6-dceff7ebe181",
+      "name": "error webhook3"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"status\": false,\n  \"error\": \"Invalid mobile number\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1380,
+        -800
+      ],
+      "id": "6a858cb0-8943-4b44-b1e6-93aa8ac347a1",
+      "name": "edit error field2"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "projectId": "pushnotify-b5ec3",
+        "collection": "=users",
+        "updateKey": "=document_id",
+        "columns": "points"
+      },
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        1580,
+        -1000
+      ],
+      "id": "9d220175-2c4c-45a5-9d7f-d60a09b2a635",
+      "name": "db update2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "H8xrk6aXLw0zruBk",
+          "name": "Google Firebase Cloud Firestore account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Notifications sent successfully\",\n  \"channels\": [\"email\", \"telegram\", \"whatsapp\"],\n  \"pointsUsed\": 5\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        1760,
+        -1000
+      ],
+      "id": "82dfe55d-b37d-4170-9981-7c3fe375c007",
+      "name": "success webhook2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5950d554-92d9-40c8-b41b-4497ad9f67ed",
+              "name": "points",
+              "value": "={{ $('Google Cloud Firestore').item.json.points - 1 }}",
+              "type": "string"
+            },
+            {
+              "id": "97a9b856-aaf7-4fb1-9a6d-8cadbecdb9bf",
+              "name": "document_id",
+              "value": "={{ $('Google Cloud Firestore').item.json._id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1380,
+        -1000
+      ],
+      "id": "866ca81d-e6fc-417b-a5b2-a598400c4171",
+      "name": "update field2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d15fdf83-26dc-4fae-9b2f-fcf5fef1ad45",
+              "leftValue": "={{ $('Google Cloud Firestore').item.json.notifications.whatsapp }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        940,
+        -440
+      ],
+      "id": "6d084f6c-5c76-4993-b9b4-97588aff08be",
+      "name": "check gmail is enabled1"
+    },
+    {
+      "parameters": {
+        "url": "https://mrprogrammer.info",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        -860
+      ],
+      "id": "4411df26-f9f5-475d-bf19-f01a895a3385",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "=New Request;\n\nUser Id : {{ $json._id }}\nName : {{ $json.name }}\nPoints : {{ $json.points }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1240,
+        300
+      ],
+      "id": "acfe49e3-a378-4f35-9f18-3710d145f4ad",
+      "name": "sent list of options",
+      "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
+      "credentials": {
+        "telegramApi": {
+          "id": "HqORjqpmIia48uDI",
+          "name": "MrProgrammer"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function escapeTelegramMarkdown(text) {\n  return String(text).replace(/[_*[\\]()~`>#+=|{}.!-]/g, '\\\\$&');\n}\n\nfunction formatJSON(obj, indent = 0) {\n  const space = '  '.repeat(indent);\n  let output = '';\n\n  if (Array.isArray(obj)) {\n    obj.forEach((item, index) => {\n      output += `${space}\\\\- Item ${index + 1}:\\n${formatJSON(item, indent + 1)}`;\n    });\n  } else if (typeof obj === 'object' && obj !== null) {\n    for (const [key, value] of Object.entries(obj)) {\n      const escapedKey = escapeTelegramMarkdown(key);\n      if (typeof value === 'object' && value !== null) {\n        output += `${space}*${escapedKey}:*\\n${formatJSON(value, indent + 1)}`;\n      } else {\n        const escapedValue = escapeTelegramMarkdown(value);\n        output += `${space}*${escapedKey}:* ${escapedValue}\\n`;\n      }\n    }\n  } else {\n    output += `${space}${escapeTelegramMarkdown(obj)}\\n`;\n  }\n\n  return output;\n}\n\nconst data = $('Webhook').item.json.body;\n\nreturn {\n  formattedText: formatJSON(data).trim()\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -860,
+        500
+      ],
+      "id": "9031d2e1-2c93-4b05-9d1a-711db61edc9c",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "update field",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "edit error field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "edit error field": {
+      "main": [
+        [
+          {
+            "node": "error webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db update": {
+      "main": [
+        [
+          {
+            "node": "check gmail is enabled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update field": {
+      "main": [
+        [
+          {
+            "node": "db update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "telegram": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "edit error field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Cloud Firestore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Cloud Firestore": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "sent list of options",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "telegram error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "telegram error1": {
+      "main": [
+        [
+          {
+            "node": "error webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "edit error field1": {
+      "main": [
+        [
+          {
+            "node": "error webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db update1": {
+      "main": [
+        [
+          {
+            "node": "check gmail is enabled1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update field1": {
+      "main": [
+        [
+          {
+            "node": "db update1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "update field1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "edit error field1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check gmail is enabled": {
+      "main": [
+        [
+          {
+            "node": "success webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "success webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "edit error field2": {
+      "main": [
+        [
+          {
+            "node": "error webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db update2": {
+      "main": [
+        [
+          {
+            "node": "success webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update field2": {
+      "main": [
+        [
+          {
+            "node": "db update2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check gmail is enabled1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "success webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "update field2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "edit error field2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4611e49d-1056-400f-9625-d4dbb06543f5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ee7707c1fecfcdb83b60a7259c8c501ea48739fc2145a4f83c8f691b057ce6b6"
+  },
+  "id": "K9UXWaLYOnVKsOmw",
+  "tags": []
+}

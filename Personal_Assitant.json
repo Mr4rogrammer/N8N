@@ -12,16 +12,16 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -440,
-        -700
+        880,
+        20
       ],
-      "id": "b8e59e35-2fee-4914-b4eb-6754b79901cc",
+      "id": "378d506f-6ffc-4ade-ac44-016e2755febc",
       "name": "Telegram Trigger",
       "webhookId": "5795fe1c-6562-436f-8cff-2e6743295b13",
       "credentials": {
         "telegramApi": {
-          "id": "R8nJZScHqw02haLU",
-          "name": "Mr.4rogrammer bot"
+          "id": "HqORjqpmIia48uDI",
+          "name": "MrProgrammer"
         }
       }
     },
@@ -82,10 +82,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -140,
-        -700
+        1180,
+        20
       ],
-      "id": "715802d6-cf6b-48f3-8201-be3c12d69b46",
+      "id": "06492219-65fa-4e4e-ac24-26feffd4de8c",
       "name": "Message or callback"
     },
     {
@@ -116,16 +116,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        160,
-        -720
+        1480,
+        0
       ],
-      "id": "b29c8ade-466a-4c8d-a7db-ddc60ddd78b2",
+      "id": "2f5f8a3f-b733-4f41-94cf-406ef47eb9e1",
       "name": "sent list of options",
       "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
       "credentials": {
         "telegramApi": {
-          "id": "R8nJZScHqw02haLU",
-          "name": "Mr.4rogrammer bot"
+          "id": "HqORjqpmIia48uDI",
+          "name": "MrProgrammer"
         }
       }
     },
@@ -162,10 +162,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -160,
-        -80
+        1160,
+        640
       ],
-      "id": "20e7fdbf-771a-48be-8fae-cdcfe9e4d231",
+      "id": "5bbffbb4-2674-439d-a217-48c6df400d90",
       "name": "split the options selected by user"
     },
     {
@@ -246,6 +246,42 @@
                   }
                 ]
               }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Triceps",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/triceps"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "As Schedule",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/schedule"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Menu",
+                    "additionalFields": {
+                      "callback_data": "mr/gym/menu"
+                    }
+                  }
+                ]
+              }
             }
           ]
         },
@@ -256,16 +292,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1140,
-        -100
+        2460,
+        620
       ],
-      "id": "15ee59c3-5734-4f70-a98b-bb32eeda336f",
+      "id": "483b02d3-b04b-40c7-b4d1-d33370b1aeca",
       "name": "sent gym workout names",
       "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
       "credentials": {
         "telegramApi": {
-          "id": "R8nJZScHqw02haLU",
-          "name": "Mr.4rogrammer bot"
+          "id": "HqORjqpmIia48uDI",
+          "name": "MrProgrammer"
         }
       }
     },
@@ -305,6 +341,28 @@
                 },
                 "conditions": [
                   {
+                    "id": "aa8ca655-c72e-4940-938d-a49d6836a9e7",
+                    "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
+                    "rightValue": "mr/gym/menu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
                     "id": "2de8adbe-655b-438e-9210-8cc44b868edb",
                     "leftValue": "={{ $('Telegram Trigger').item.json.callback_query.data }}",
                     "rightValue": "mr/gym/",
@@ -324,16 +382,16 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        600,
-        -80
+        1920,
+        640
       ],
-      "id": "ac413e06-a095-4185-ac3d-5e7e7ad93fd8",
+      "id": "c76efde1-88c7-4180-9431-0993b811c68c",
       "name": "Gym Data Spliter"
     },
     {
       "parameters": {
         "chatId": "1199262493",
-        "text": "=\nHere's the link to your {{ $json['WorkOur Name'] }} 🔥 workout for today, bro.\n\n{{ $json.Link }}\n\n",
+        "text": "=\nHere's the link to your {{ $json['WorkOur Name'] }} 🔥 workout for today, bro.\n\n{{ $json.Link }}\n",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -341,80 +399,46 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1180,
-        320
+        2860,
+        1060
       ],
-      "id": "b42b5d65-2c32-427b-b4f5-077c4eec0400",
+      "id": "47f03b8c-66f3-4248-be6d-1d41f8c21d8d",
       "name": "link gym video links",
       "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
       "credentials": {
         "telegramApi": {
-          "id": "R8nJZScHqw02haLU",
-          "name": "Mr.4rogrammer bot"
+          "id": "HqORjqpmIia48uDI",
+          "name": "MrProgrammer"
         }
       }
     },
     {
       "parameters": {
-        "operation": "search",
-        "base": {
-          "__rl": true,
-          "value": "app6JXg9YPvJJkAed",
-          "mode": "list",
-          "cachedResultName": "Gym",
-          "cachedResultUrl": "https://airtable.com/app6JXg9YPvJJkAed"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tblezOv9oEPXaq0M6",
-          "mode": "list",
-          "cachedResultName": "gym link data",
-          "cachedResultUrl": "https://airtable.com/app6JXg9YPvJJkAed/tblezOv9oEPXaq0M6"
-        },
-        "filterByFormula": "=",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.1,
-      "position": [
-        600,
-        320
-      ],
-      "id": "d0ee972d-7f2a-48cd-ad9c-a02ddad7f29e",
-      "name": "Gym Links",
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "9bPeAvakB1tkDxsW",
-          "name": "Airtable Personal Access Token account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "\n\nlet resultValue = []\n\nfor (const item of $input.all()) {\n  if (item.json.tag == $('Gym Data Spliter').first().json.callback_query.data) {\n    resultValue.push(item)\n  }\n}\n\nreturn resultValue;"
+        "jsCode": "let scheduleKey = \"mr/gym/schedule\";\nlet resultValue = [];\n\nfunction filterByDay(data, day) {\n  const filteredItems = [];\n  \n   if (data.Day.toLowerCase() === day.toLowerCase()) {\n      filteredItems.push(data);\n    }\n  return filteredItems;\n}\n\nfunction getTodayDay() {\n  const daysOfWeek = [\"Sunday\", \"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\"];\n  const today = new Date();\n  return daysOfWeek[today.getDay()];\n}\n\nfor (const item of $input.all()) {\n  if ($('Gym Data Spliter').first().json.callback_query.data === scheduleKey) {\n   \n    const todayDay = getTodayDay();\n    \n    resultValue.push(...filterByDay(item.json, todayDay)); \n  } else {\n    \n    if (item.json.tag === $('Gym Data Spliter').first().json.callback_query.data) {\n      resultValue.push(item);\n    }\n  }\n}\n\nlet data = {\n    resultValue: resultValue,\n    hasData: resultValue.length > 0,\n  };\n\nreturn resultValue;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        920,
-        320
+        2160,
+        1040
       ],
-      "id": "6d05e514-7c7a-4df4-ba4f-c51b3ce48b0a",
-      "name": "Code"
+      "id": "9b22815c-cc17-4131-ae3e-0048f06cc512",
+      "name": "Code",
+      "alwaysOutputData": false
     },
     {
       "parameters": {
         "content": "Gym Flow\n",
-        "height": 660,
-        "width": 920
+        "height": 700,
+        "width": 1180
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        520,
-        -160
+        1840,
+        560
       ],
       "typeVersion": 1,
-      "id": "819ae064-c338-46e0-9c92-1ccc282964d3",
+      "id": "bb071e3d-aa94-48dd-9418-e2469deac897",
       "name": "Sticky Note"
     },
     {
@@ -425,11 +449,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -520,
-        -820
+        800,
+        -100
       ],
       "typeVersion": 1,
-      "id": "65ee808a-6f26-4355-8654-5a8951bf022e",
+      "id": "46654ed5-f573-45d2-af7b-41d73d3cbff4",
       "name": "Sticky Note1"
     },
     {
@@ -440,11 +464,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -300,
-        -140
+        1020,
+        580
       ],
       "typeVersion": 1,
-      "id": "a5711266-3d60-471e-91bd-335b4ec64d87",
+      "id": "e3b33c26-4053-47a8-8927-6321ae2b1fd5",
       "name": "Sticky Note2"
     },
     {
@@ -452,7 +476,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 6
+              "triggerAtHour": 5,
+              "triggerAtMinute": 30
             }
           ]
         }
@@ -460,10 +485,10 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1300,
-        -680
+        20,
+        40
       ],
-      "id": "45211db3-c9f5-4713-b00c-dcca4affc399",
+      "id": "a01a6240-80fd-42ef-98b1-8ab4bb9076db",
       "name": "Schedule Trigger"
     },
     {
@@ -477,16 +502,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -840,
-        -680
+        480,
+        40
       ],
-      "id": "a8c93832-70ee-456c-8240-96acdb0cbdb0",
+      "id": "094eea3a-b412-4ade-ae10-47c3a2d6f5d2",
       "name": "link gym video links1",
       "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
       "credentials": {
         "telegramApi": {
-          "id": "R8nJZScHqw02haLU",
-          "name": "Mr.4rogrammer bot"
+          "id": "HqORjqpmIia48uDI",
+          "name": "MrProgrammer"
         }
       }
     },
@@ -498,10 +523,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1060,
-        -680
+        260,
+        40
       ],
-      "id": "cb2b5b5f-3083-49db-bafb-7b052950005c",
+      "id": "608c8e04-90f4-45ec-8f30-2956f7a4954c",
       "name": "Code1"
     },
     {
@@ -512,12 +537,84 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1400,
-        -820
+        -80,
+        -100
       ],
       "typeVersion": 1,
-      "id": "8c263e8d-90c7-4390-bde6-d8fe1457fb8f",
+      "id": "b2577c19-d0c8-4f68-ab74-907f98eccdfa",
       "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2480,
+        1040
+      ],
+      "id": "7ec69a22-f8d1-40a3-829a-a1a5042afe0d",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "chatId": "1199262493",
+        "text": "──── WEEKLY WORKOUT SCHEDULE ────\n\n▸ Tuesday     : Chest / Shoulder\n▸ Wednesday    : Arms / Back\n▸ Thursday  : Abs / Triceps\n▸ Friday   : Shoulder / Chest\n▸ Saturday     : Back / Arms\n▸ Sunday   : Triceps / Abs",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2460,
+        840
+      ],
+      "id": "e62e0bb7-496e-489c-a3be-eb958d43dc71",
+      "name": "sent gym workout names1",
+      "webhookId": "9373d46a-d5ad-40f4-93c0-7a44ff5fea37",
+      "credentials": {
+        "telegramApi": {
+          "id": "HqORjqpmIia48uDI",
+          "name": "MrProgrammer"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc",
+          "mode": "list",
+          "cachedResultName": "Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 750642459,
+          "mode": "list",
+          "cachedResultName": "gym links",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit#gid=750642459"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1920,
+        1040
+      ],
+      "id": "1d9c355a-4ffe-47ed-a27e-4af01de2855e",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OOvdkJULy6xh4dvL",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -551,11 +648,6 @@
         ]
       ]
     },
-    "sent list of options": {
-      "main": [
-        []
-      ]
-    },
     "split the options selected by user": {
       "main": [
         [
@@ -578,7 +670,14 @@
         ],
         [
           {
-            "node": "Gym Links",
+            "node": "sent gym workout names1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets",
             "type": "main",
             "index": 0
           }
@@ -587,14 +686,9 @@
     },
     "link gym video links": {
       "main": [
-        []
-      ]
-    },
-    "Gym Links": {
-      "main": [
         [
           {
-            "node": "Code",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -605,7 +699,7 @@
       "main": [
         [
           {
-            "node": "link gym video links",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -633,17 +727,42 @@
           }
         ]
       ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "link gym video links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "7a5366f0-d01d-4a1f-aa6b-c8d7d5261a8d",
+  "versionId": "c65caae3-309b-4448-b65a-9900c97cdb6f",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
+    "instanceId": "ee7707c1fecfcdb83b60a7259c8c501ea48739fc2145a4f83c8f691b057ce6b6"
   },
-  "id": "wS2U7VXMwNEKaf4E",
+  "id": "eP3gkS8sH3Pqq1MJ",
   "tags": []
 }

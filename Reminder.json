@@ -15,46 +15,11 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -2420,
-        580
+        -1780,
+        820
       ],
-      "id": "4a9335fc-b841-4e6f-8736-fcad082797fe",
+      "id": "afb43f0c-9066-4d57-b72c-493d55ef03b0",
       "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
-        "operation": "search",
-        "base": {
-          "__rl": true,
-          "value": "appPB1OKHCOGmahGW",
-          "mode": "list",
-          "cachedResultName": "Daily Routine Notification App",
-          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tblPGd0MiAgeY5cag",
-          "mode": "list",
-          "cachedResultName": "Daily Routines",
-          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW/tblPGd0MiAgeY5cag"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.1,
-      "position": [
-        -1760,
-        560
-      ],
-      "id": "2f733c55-1b12-42b2-a4a3-875cbbdfc7f2",
-      "name": "Fetch Records",
-      "executeOnce": true,
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "9bPeAvakB1tkDxsW",
-          "name": "Airtable Personal Access Token account"
-        }
-      }
     },
     {
       "parameters": {
@@ -67,16 +32,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        180,
-        60
+        820,
+        300
       ],
-      "id": "24639b4d-81f4-4b0a-a4f1-6e8c35b08e1e",
+      "id": "066da1ff-f3d9-4f0a-ac74-531af01861d6",
       "name": "pavi",
       "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
       "credentials": {
         "telegramApi": {
-          "id": "GJu08pI3UWbAaaZg",
-          "name": "Reminder Bot API"
+          "id": "NYvdQJWayGwwFD3c",
+          "name": "Reminder Bot"
         }
       }
     },
@@ -87,58 +52,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -860,
-        -200
+        -220,
+        40
       ],
-      "id": "55838bea-ab29-481c-857d-4572ac81dc06",
+      "id": "620d6380-78c4-41e2-a2fe-848a85fffad3",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "jsCode": "function getAsiaTime(timezone = 'Asia/Kolkata') {\n    const now = new Date();\n    const options = {\n        hour: '2-digit',\n        minute: '2-digit',\n        hour12: true,\n        day: '2-digit',\n        month: '2-digit',\n        timeZone: timezone\n    };\n    \n    const formatter = new Intl.DateTimeFormat('en-US', options);\n    const parts = formatter.formatToParts(now);\n\n    const hh = parts.find(p => p.type === 'hour').value;\n    const mm = parts.find(p => p.type === 'minute').value;\n    const ampm = parts.find(p => p.type === 'dayPeriod').value;\n    const date = parts.find(p => p.type === 'day').value;\n    const month = parts.find(p => p.type === 'month').value;\n\n    return { hh, mm, ampm, date, month };\n}\n\nreturn getAsiaTime()"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1960,
-        560
-      ],
-      "id": "967d88a9-946f-471f-bd7a-61c3e4320ec9",
-      "name": "Get today date and time"
-    },
-    {
-      "parameters": {
-        "operation": "search",
-        "base": {
-          "__rl": true,
-          "value": "appSp8pgRJzAdmSGJ",
-          "mode": "list",
-          "cachedResultName": "Love quotes and emjio",
-          "cachedResultUrl": "https://airtable.com/appSp8pgRJzAdmSGJ"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tblFwlF4SJh8ps186",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://airtable.com/appSp8pgRJzAdmSGJ/tblFwlF4SJh8ps186"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.1,
-      "position": [
-        -240,
-        -200
-      ],
-      "id": "6dfbf87c-d345-430f-b62d-e5155095c58d",
-      "name": "love quotes",
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "9bPeAvakB1tkDxsW",
-          "name": "Airtable Personal Access Token account"
-        }
-      }
     },
     {
       "parameters": {
@@ -147,24 +65,26 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -60,
-        -200
+        580,
+        40
       ],
-      "id": "5bb3229a-784c-4783-835d-c7a7743f092d",
+      "id": "b1c00c6a-d0a3-4206-b951-5539cba89572",
       "name": "random love quotes"
     },
     {
       "parameters": {
-        "jsCode": "let TodayDD = $('Get today date and time').first().json.date\n\nlet ThisMonth = $('Get today date and time').first().json.month\n\nlet currentHr = $('Schedule Trigger').first().json.Hour\n\nlet resultValue = [];\n\n\nconst loveEmojis = [\n    \"❤️\", \"💖\", \"💘\", \"💝\", \"💗\", \"💓\", \"💞\", \"💕\", \"💌\", \"💋\",\n    \"😍\", \"😘\", \"🥰\", \"💏\", \"💑\", \"💍\", \"👩‍❤️‍👨\", \"👩‍❤️‍👩\", \"👨‍❤️‍👨\", \"💬\"\n];\n\n// Function to get a random love emoji from the list\nfunction getRandomLoveEmoji() {\n    const randomIndex = Math.floor(Math.random() * loveEmojis.length);\n    return loveEmojis[randomIndex];\n}\n\n\nfunction getRandomFromString(inputString) {\n    const items = inputString.split('|');\n    const randomIndex = Math.floor(Math.random() * items.length);\n    return items[randomIndex].trim();\n}\n\nfor (const item of $input.all()) {\n  item.json[\"Routine Summary\"] = getRandomFromString(item.json[\"Routine Summary\"]) +\" \" +getRandomLoveEmoji()\n  \n    if(\"Date\" in item.json) {\n      const [year, month, day] = item.json.Date.split(\"-\");\n      if (month == ThisMonth && day == TodayDD && item.json.Hour.includes(currentHr)) {\n        resultValue.push(item)\n      }\n    } else if (item.json.Hour.includes(currentHr)) {\n      resultValue.push(item)\n    }\n  \n}\n\nreturn resultValue\n\n"
+        "jsCode": "\n\nlet currentHr = $('Schedule Trigger').first().json.Hour\n\nlet resultValue = [];\n\n\nconst loveEmojis = [\n    \"❤️\", \"💖\", \"💘\", \"💝\", \"💗\", \"💓\", \"💞\", \"💕\", \"💌\", \"💋\",\n    \"😍\", \"😘\", \"🥰\", \"💏\", \"💑\", \"💍\", \"👩‍❤️‍👨\", \"👩‍❤️‍👩\", \"👨‍❤️‍👨\", \"💬\"\n];\n\n// Function to get a random love emoji from the list\nfunction getRandomLoveEmoji() {\n    const randomIndex = Math.floor(Math.random() * loveEmojis.length);\n    return loveEmojis[randomIndex];\n}\n\n\nfunction getRandomFromString(inputString) {\n    const items = inputString.split('|');\n    const randomIndex = Math.floor(Math.random() * items.length);\n    return items[randomIndex].trim();\n}\n\nfunction parseInput(input) {\n  if (typeof input === \"string\") {\n    return input.split(',').map(Number);\n  } else if (typeof input === \"number\") {\n    return [input];\n  }\n  return [];\n}\n\nfor (const item of $('Fetch Records').all()) {\n  item.json[\"Routine Summary\"] = getRandomFromString(item.json[\"Routine Summary\"]) +\" \" +getRandomLoveEmoji()\n  let hours = item.json.Hour\n      console.log(parseInput(hours))\n    if(hours.includes(currentHr)) {\n      resultValue.push(item)\n    }\n  \n}\n\nreturn resultValue\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1520,
-        560
+        -880,
+        800
       ],
-      "id": "0f42c981-76d3-4383-bbb4-beb5ca22ad96",
-      "name": "Code"
+      "id": "2ca0410e-de0d-4b8d-b03b-ceda43e8cd7b",
+      "name": "Code",
+      "executeOnce": true,
+      "alwaysOutputData": false
     },
     {
       "parameters": {
@@ -182,8 +102,7 @@
               "rightValue": "01",
               "operator": {
                 "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
+                "operation": "equals"
               }
             }
           ],
@@ -194,10 +113,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2200,
-        580
+        -1560,
+        820
       ],
-      "id": "bf706bc3-3c24-4cee-936b-5336afe70eba",
+      "id": "ae6087d6-6f5e-4aaf-b746-56b435ed77d9",
       "name": "If"
     },
     {
@@ -207,24 +126,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -900,
-        1260
+        -260,
+        1500
       ],
-      "id": "e4e82284-3b96-4518-bc07-6b49a568b623",
+      "id": "9c8e2512-f6b6-4f85-a702-18ac568e2714",
       "name": "Loop Over Items1"
-    },
-    {
-      "parameters": {
-        "jsCode": "let TodayDD = $('Get today date and time').first().json.date\n\nlet ThisMonth = $('Get today date and time').first().json.month\n\nlet currentHr = $('Schedule Trigger').first().json.Hour\n\nlet resultValue = [];\n\nlet items = $('Fetch Records').all()\n\nfor (const item of items) {\n    if(\"Date\" in item.json) {\n      const [year, month, day] = item.json.Date.split(\"-\");\n      if (month == ThisMonth && day == TodayDD && item.json.Hour.includes(currentHr)) {\n        resultValue.push(item)\n      }\n    } \n  \n}\n\nreturn resultValue\n\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -580,
-        660
-      ],
-      "id": "cd0cf59f-79c5-4e83-b5bb-7b8e2dddd5aa",
-      "name": "remove completed events1"
     },
     {
       "parameters": {
@@ -237,53 +143,18 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        0,
-        1260
+        640,
+        1500
       ],
-      "id": "8dc8fb37-f8cb-4b59-a688-4675434d7c34",
+      "id": "73d13620-c0a5-4e0c-94f2-a926676d1c3f",
       "name": "Krishna",
       "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
       "credentials": {
         "telegramApi": {
-          "id": "GJu08pI3UWbAaaZg",
-          "name": "Reminder Bot API"
+          "id": "NYvdQJWayGwwFD3c",
+          "name": "Reminder Bot"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "deleteRecord",
-        "base": {
-          "__rl": true,
-          "value": "appPB1OKHCOGmahGW",
-          "mode": "list",
-          "cachedResultName": "Daily Routine Notification App",
-          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tblPGd0MiAgeY5cag",
-          "mode": "list",
-          "cachedResultName": "Daily Routines",
-          "cachedResultUrl": "https://airtable.com/appPB1OKHCOGmahGW/tblPGd0MiAgeY5cag"
-        },
-        "id": "={{ $json.id }}"
-      },
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.1,
-      "position": [
-        -360,
-        660
-      ],
-      "id": "bf1b4484-cfcd-40b2-a017-2150b8cae813",
-      "name": "delete the completed even from db1",
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "9bPeAvakB1tkDxsW",
-          "name": "Airtable Personal Access Token account"
-        }
-      },
-      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -300,9 +171,8 @@
               "leftValue": "={{ $json['To Whom'] }}",
               "rightValue": "Pavi",
               "operator": {
-                "type": "array",
-                "operation": "contains",
-                "rightType": "any"
+                "type": "string",
+                "operation": "contains"
               }
             }
           ],
@@ -313,10 +183,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -540,
-        -180
+        100,
+        60
       ],
-      "id": "c8c8e683-08f2-4df7-915f-de2dff22be73",
+      "id": "ec7eab74-2a6a-4b68-b792-e13919d04afc",
       "name": "If1"
     },
     {
@@ -334,9 +204,8 @@
               "leftValue": "={{ $json['To Whom'] }}",
               "rightValue": "Krishna",
               "operator": {
-                "type": "array",
-                "operation": "contains",
-                "rightType": "any"
+                "type": "string",
+                "operation": "contains"
               }
             }
           ],
@@ -347,10 +216,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -460,
-        1260
+        180,
+        1500
       ],
-      "id": "b0a7eef2-805a-4310-9cbb-4ca8c2e17c0d",
+      "id": "b9ca5d03-37b7-4bf5-9027-ceb4fd025a41",
       "name": "If2"
     },
     {
@@ -363,10 +232,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2520,
-        480
+        -1860,
+        700
       ],
-      "id": "fa733199-473f-4157-9e9e-04f3aab4f4f9",
+      "id": "8861e316-a5b0-44bb-93f3-6da1ecd5d6e8",
       "name": "Sticky Note"
     },
     {
@@ -379,27 +248,11 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -980,
-        1140
+        -340,
+        1380
       ],
-      "id": "13b1fa4a-e8e1-450b-b941-7b5831dc1833",
+      "id": "55fd14d7-d651-4465-a2a8-ea611b18094b",
       "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "content": "Delete common\n",
-        "height": 340,
-        "width": 720,
-        "color": 5
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -700,
-        560
-      ],
-      "id": "31d78e4f-fa07-489d-b113-ea8aa1e85e48",
-      "name": "Sticky Note2"
     },
     {
       "parameters": {
@@ -411,97 +264,90 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1020,
-        -380
+        -380,
+        -140
       ],
-      "id": "404acd74-96d1-403a-9b30-9e983712bfa8",
+      "id": "41b51171-7233-456e-993e-0bb97d25c0bb",
       "name": "Sticky Note3"
     },
     {
       "parameters": {
-        "url": "https://api.openweathermap.org/data/2.5/weather?lat=12.8439&lon=80.0597&appid=b7955f5c0507816857bf48de459635ed",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -1320,
-        2320
-      ],
-      "id": "15e322e6-e2b9-4339-a157-a52a7216f618",
-      "name": "HTTP Request1"
-    },
-    {
-      "parameters": {
-        "jsCode": "function convertWeatherJsonTempsToCelsius(jsonData) {\n  jsonData.forEach(item => {\n     console.log(item.json.main)\n    if (item.json.main) {\n      console.log(\"coming\")\n      item.json.main.temp = (item.json.main.temp - 273.15).toFixed(2);\n      item.json.main.feels_like = (item.json.main.feels_like - 273.15).toFixed(2);\n      item.json.main.temp_min = (item.json.main.temp_min - 273.15).toFixed(2);\n      item.json.main.temp_max = (item.json.main.temp_max - 273.15).toFixed(2);\n    }\n  });\n\n  return jsonData;\n}\n\n// Example usage:\nconst weather = $input.all()\n\nreturn convertWeatherJsonTempsToCelsius(weather);\n;"
+        "jsCode": "function getAsiaTime(timezone = 'Asia/Kolkata') {\n    const now = new Date();\n    const options = {\n        hour: '2-digit',\n        minute: '2-digit',\n        hour12: true,\n        day: '2-digit',\n        month: '2-digit',\n        timeZone: timezone\n    };\n    \n    const formatter = new Intl.DateTimeFormat('en-US', options);\n    const parts = formatter.formatToParts(now);\n\n    const hh = parts.find(p => p.type === 'hour').value;\n    const mm = parts.find(p => p.type === 'minute').value;\n    const ampm = parts.find(p => p.type === 'dayPeriod').value;\n    const date = parts.find(p => p.type === 'day').value;\n    const month = parts.find(p => p.type === 'month').value;\n\n    return { hh, mm, ampm, date, month };\n}\n\nreturn getAsiaTime()"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1120,
-        2320
+        -1320,
+        800
       ],
-      "id": "93509399-430f-4abd-83f6-7e74265d7978",
-      "name": "Code2"
+      "id": "d45c62c7-785f-4616-9d41-e9fd6bb6585c",
+      "name": "Get today date and time"
     },
     {
       "parameters": {
-        "content": "Weather\n",
-        "height": 260,
-        "width": 740
+        "documentId": {
+          "__rl": true,
+          "value": "1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc",
+          "mode": "list",
+          "cachedResultName": "Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1764671293,
+          "mode": "list",
+          "cachedResultName": "Pavi",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit#gid=1764671293"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
       "position": [
-        -1380,
-        2260
+        -1080,
+        800
       ],
-      "id": "2eaf4d26-2f3c-4a2b-a600-442c719cdaec",
-      "name": "Sticky Note5"
-    },
-    {
-      "parameters": {
-        "chatId": "1199262493",
-        "text": "=Hey bro\n\nLocation : {{ $json.name }}\nWeather : {{ $json.weather[0].main }}\nDescription : {{ $json.weather[0].description }}\nWind Speed : {{ $json.wind.speed }}\nCelsius : {{ $json.main.temp }} °C\n\n",
-        "additionalFields": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        -860,
-        2320
-      ],
-      "id": "975295ef-9f5a-42a7-b84b-cfd39e9040d5",
-      "name": "krishna",
-      "webhookId": "656593be-1550-4fd8-82b1-3ed4c83887cf",
+      "id": "a9a9a30d-297b-43d2-ba1c-db35d2e7cc72",
+      "name": "Fetch Records",
       "credentials": {
-        "telegramApi": {
-          "id": "GJu08pI3UWbAaaZg",
-          "name": "Reminder Bot API"
+        "googleSheetsOAuth2Api": {
+          "id": "OOvdkJULy6xh4dvL",
+          "name": "Google Sheets account"
         }
       }
     },
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "hours",
-              "hoursInterval": 2
-            }
-          ]
-        }
+        "documentId": {
+          "__rl": true,
+          "value": "1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc",
+          "mode": "list",
+          "cachedResultName": "Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 798247965,
+          "mode": "list",
+          "cachedResultName": "love quotes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit#gid=798247965"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
       "position": [
-        -1780,
-        2320
+        360,
+        60
       ],
-      "id": "bdac8604-9e1f-4155-9c93-b3b4b2c96ab1",
-      "name": "Schedule Trigger1"
+      "id": "46abca41-8330-4440-b9c6-7f9c9c94d955",
+      "name": "love quotes",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OOvdkJULy6xh4dvL",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -511,35 +357,6 @@
         [
           {
             "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fetch Records": {
-      "main": [
-        [
-          {
-            "node": "Code",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [
-          {
-            "node": "remove completed events1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -557,11 +374,12 @@
         ]
       ]
     },
-    "love quotes": {
+    "Loop Over Items": {
       "main": [
+        [],
         [
           {
-            "node": "random love quotes",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -573,17 +391,6 @@
         [
           {
             "node": "pavi",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get today date and time": {
-      "main": [
-        [
-          {
-            "node": "Fetch Records",
             "type": "main",
             "index": 0
           }
@@ -614,33 +421,15 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "Loop Over Items1": {
       "main": [
-        [
-          {
-            "node": "remove completed events1",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "If2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "remove completed events1": {
-      "main": [
-        [
-          {
-            "node": "delete the completed even from db1",
             "type": "main",
             "index": 0
           }
@@ -694,33 +483,33 @@
         ]
       ]
     },
-    "HTTP Request1": {
+    "Get today date and time": {
       "main": [
         [
           {
-            "node": "Code2",
+            "node": "Fetch Records",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code2": {
+    "Fetch Records": {
       "main": [
         [
           {
-            "node": "krishna",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Schedule Trigger1": {
+    "love quotes": {
       "main": [
         [
           {
-            "node": "HTTP Request1",
+            "node": "random love quotes",
             "type": "main",
             "index": 0
           }
@@ -734,11 +523,11 @@
     "timezone": "Asia/Kolkata",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "db1e0490-4a0c-4dcc-ba38-fdc58a5b3ce2",
+  "versionId": "e881074c-cfc1-48cd-8a4b-0a1a93bbf288",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
+    "instanceId": "ee7707c1fecfcdb83b60a7259c8c501ea48739fc2145a4f83c8f691b057ce6b6"
   },
-  "id": "wKZi8dSwLLsDTWAs",
+  "id": "cvRJOxSIh6PGt4OU",
   "tags": []
 }

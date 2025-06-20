@@ -1,0 +1,247 @@
+{
+  "name": "Whatsapp Notification Creator",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "formTitle": "Whats App Automation",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "To",
+              "fieldType": "number",
+              "placeholder": "Enter receiver whatsapp number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Date",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Hour",
+              "fieldType": "number",
+              "placeholder": "01 to 12",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Minutes",
+              "fieldType": "number",
+              "placeholder": "00 to 60",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "am/pm",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "am"
+                  },
+                  {
+                    "option": "pm"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Message",
+              "placeholder": "Message need to be sent",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Save",
+          "useWorkflowTimezone": true
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -20,
+        40
+      ],
+      "id": "6f76c72d-50cc-4d61-ac5d-362c478040af",
+      "name": "On form submission",
+      "webhookId": "9be10673-4efb-4f17-8e15-45d8e62b7755",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "S5radm17KhsqVEyy",
+          "name": "Whatsapp Automation"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc",
+          "mode": "list",
+          "cachedResultName": "Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 139248140,
+          "mode": "list",
+          "cachedResultName": "Whatsapp",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n7oAJwnf5uLlx6d5_OEdAP73bBRLRZaqAqrzonB0nDc/edit#gid=139248140"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "To": "={{ $json.To }}",
+            "Date": "={{ new Date($json.Date).toISOString().slice(0, 10).split('-').reverse().join('-') }}",
+            "Message": "={{ $json.Message }}",
+            "Time": "={{ $json.Hour.toString().padStart(2, '0') }}:{{ $json.Minutes.toString().padStart(2, '0') }}:{{ $json['am/pm'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        180,
+        40
+      ],
+      "id": "709a1eec-5b9a-40bf-ba33-0ec88dd1a37c",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OOvdkJULy6xh4dvL",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Data failed to save 😥",
+        "completionMessage": "Your information not saved",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        440,
+        140
+      ],
+      "id": "31d6caf3-6316-4c13-af4e-07b8b53109ed",
+      "name": "Form",
+      "webhookId": "7d6aaf2f-9836-4319-9f91-c47605c170af"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Date Saved 😃",
+        "completionMessage": "Your information has been recorded will be executed on time",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        420,
+        -100
+      ],
+      "id": "4aa7b676-96cb-4cd3-9f0b-9e77fd50b40e",
+      "name": "Form1",
+      "webhookId": "7d6aaf2f-9836-4319-9f91-c47605c170af"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Form1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "c86fd22e-d371-4574-ba45-2affb59d29ec",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ee7707c1fecfcdb83b60a7259c8c501ea48739fc2145a4f83c8f691b057ce6b6"
+  },
+  "id": "916WuPm9JsqKo41K",
+  "tags": []
+}

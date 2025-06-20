@@ -7,30 +7,31 @@
           "item": [
             {
               "mode": "everyX",
-              "value": 5,
               "unit": "minutes"
             }
           ]
         },
         "filters": {
           "labelIds": [
-            "CATEGORY_UPDATES"
+            "INBOX",
+            "CATEGORY_UPDATES",
+            "UNREAD"
           ],
-          "q": "from:HDFC Bank InstaAlerts <alerts@hdfcbank.net>"
+          "sender": "HDFC Bank InstaAlerts <alerts@hdfcbank.net>"
         }
       },
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.2,
       "position": [
-        -620,
-        -20
+        -1620,
+        20
       ],
-      "id": "5895c8a5-1dc7-48aa-8560-6725a4bbb8d5",
+      "id": "640a3473-d370-45ab-ac39-b5fde92ecbac",
       "name": "Gmail Trigger",
       "credentials": {
         "gmailOAuth2": {
-          "id": "g4tEcIQrZzv1p64p",
-          "name": "Gmail account Krish11022002"
+          "id": "YKiTte54wzp18Umy",
+          "name": "tn36king"
         }
       }
     },
@@ -41,10 +42,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        80,
-        -20
+        -920,
+        20
       ],
-      "id": "e027c004-85cb-49f7-a9bd-46873a7843e6",
+      "id": "558d655b-7893-49f3-a296-6a5a02082ac8",
       "name": "map used articls ids"
     },
     {
@@ -60,7 +61,7 @@
             {
               "id": "934a4ab8-bc6b-4d1b-b050-c1f19a03cc9f",
               "leftValue": "={{ $('map used articls ids').item.json.values }}",
-              "rightValue": "={{ $('Loop Over Items').item.json.id }}",
+              "rightValue": "={{ $('Loop Over Items').first().json.id }}",
               "operator": {
                 "type": "array",
                 "operation": "notContains",
@@ -75,16 +76,16 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        300,
-        -20
+        -700,
+        20
       ],
-      "id": "bb293c78-a989-4273-98e0-3220e44aa259",
+      "id": "3028d5f9-5589-4f34-8351-364351e94fc5",
       "name": "filter only unused Ids"
     },
     {
       "parameters": {
         "chatId": "7779820575",
-        "text": "=💳 *Transaction Alert*\n\n📅 *Date:* `{{ $json.Date }}`  \n💰 *Amount:* `₹{{ $json.Amount }}`  \n🏷️ *Recipient:* `{{ $json.Recipient }}`  \n🔢 *UPI Reference No:* `{{ $json.UpiReference }}`",
+        "text": "=💳 *Transaction Spent Alert*\n\n📅 *Date:* `{{ $json.Date }}`  \n💰 *Amount:* `₹{{ $json.Amount }}`  \n🏷️ *Recipient:* `{{ $json.Recipient }}`  \n🔢 *UPI Reference No:* `{{ $json.UpiReference }}`",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -92,16 +93,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        860,
-        220
+        -140,
+        260
       ],
-      "id": "23746194-0eb7-4eab-92fb-ca77a7526d1f",
+      "id": "ad9333eb-f357-4dec-bf7e-1c5ca1423d05",
       "name": "sent notification to telegram to pavi",
       "webhookId": "457dc38a-ddcb-474b-bc81-e7e895cd3a93",
       "credentials": {
         "telegramApi": {
-          "id": "GJu08pI3UWbAaaZg",
-          "name": "Reminder Bot API"
+          "id": "NYvdQJWayGwwFD3c",
+          "name": "Reminder Bot"
         }
       }
     },
@@ -112,45 +113,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -400,
-        -20
+        -1400,
+        20
       ],
-      "id": "13332e8c-92cd-4745-9533-c96ec5b480fc",
+      "id": "1c4da15f-c689-456d-99ed-68fd1ceb4728",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso",
-          "mode": "list",
-          "cachedResultName": "UPI Usage",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit#gid=0"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        -160,
-        -20
-      ],
-      "id": "956f1fd0-669f-41c8-bcd5-0b150f71fc38",
-      "name": "Google Sheets",
-      "alwaysOutputData": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "k6hTpqZXf822XtpQ",
-          "name": "Google Sheets account"
-        }
-      }
     },
     {
       "parameters": {
@@ -159,16 +126,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        520,
-        -20
+        -480,
+        20
       ],
-      "id": "001a4f40-41bc-4b10-a5e9-186be2f954fa",
+      "id": "e4bbb51e-8a55-4ec3-a9d7-c8bb83e0b225",
       "name": "Extract the required data from mail"
     },
     {
       "parameters": {
         "chatId": "1199262493",
-        "text": "=💳 *Transaction Alert*\n\n📅 *Date:* `{{ $json.Date }}`  \n💰 *Amount:* `₹{{ $json.Amount }}`  \n🏷️ *Recipient:* `{{ $json.Recipient }}`  \n🔢 *UPI Reference No:* `{{ $json.UpiReference }}`",
+        "text": "=💳 *Transaction Spent Alert*\n\n📅 *Date:* `{{ $json.Date }}`  \n💰 *Amount:* `₹{{ $json.Amount }}`  \n🏷️ *Recipient:* `{{ $json.Recipient }}`  \n🔢 *UPI Reference No:* `{{ $json.UpiReference }}`",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -176,16 +143,16 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        840,
-        -100
+        -160,
+        -60
       ],
-      "id": "9e368066-2a66-4a10-a852-8a6811c0f789",
+      "id": "b7c6d6ac-2478-407a-8f24-4573f1941e0b",
       "name": "sent notification to telegram to krishna",
       "webhookId": "457dc38a-ddcb-474b-bc81-e7e895cd3a93",
       "credentials": {
         "telegramApi": {
-          "id": "GJu08pI3UWbAaaZg",
-          "name": "Reminder Bot API"
+          "id": "NYvdQJWayGwwFD3c",
+          "name": "Reminder Bot"
         }
       }
     },
@@ -289,15 +256,72 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1160,
-        240
+        100,
+        440
       ],
-      "id": "1f6c1df5-cc69-4038-b9ee-5eca45002d6d",
+      "id": "b764e118-0cd8-4f47-8601-e81c488a34f7",
       "name": "update the usage in sheet row",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "k6hTpqZXf822XtpQ",
+          "id": "OOvdkJULy6xh4dvL",
           "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso",
+          "mode": "list",
+          "cachedResultName": "UPI Usage",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fWshqrsS8A0ykEPasbvdH_U5KYqkfMvROXXnsQghHso/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1160,
+        20
+      ],
+      "id": "ffab4fee-1b4c-4231-8016-e40ec83d04be",
+      "name": "Get the already uses records to filter",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OOvdkJULy6xh4dvL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "krish11022002@gmail.com",
+        "subject": "Payment Sent Status",
+        "message": "Payment Message has been sent",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        440
+      ],
+      "id": "51a36895-5e5f-4528-87cd-4b7dc9b848d6",
+      "name": "Gmail1",
+      "webhookId": "e80bf2e0-6859-4f6a-a87e-4f6ec4b498db",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "QndLtGQNSrJE1IUY",
+          "name": "Gmail account"
         }
       }
     }
@@ -353,18 +377,7 @@
         [],
         [
           {
-            "node": "Google Sheets",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Sheets": {
-      "main": [
-        [
-          {
-            "node": "map used articls ids",
+            "node": "Get the already uses records to filter",
             "type": "main",
             "index": 0
           }
@@ -387,12 +400,29 @@
         ]
       ]
     },
-    "sent notification to telegram to krishna": {
+    "update the usage in sheet row": {
       "main": [
-        []
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
-    "update the usage in sheet row": {
+    "Get the already uses records to filter": {
+      "main": [
+        [
+          {
+            "node": "map used articls ids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
       "main": [
         [
           {
@@ -406,13 +436,15 @@
   },
   "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "a6d2ece2-4465-43ea-b1bc-46ecf3dcaad3",
+  "versionId": "d496eea6-c0c7-4fd0-8341-ca6ed1aded5c",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "52be616fc3b9990a95b5266574f084bd2127609e79ce7dbfc33a1224bcc79eee"
+    "instanceId": "ee7707c1fecfcdb83b60a7259c8c501ea48739fc2145a4f83c8f691b057ce6b6"
   },
-  "id": "bk0oFjAq1T2Rzn1g",
+  "id": "uXIPvopcUNNFG2JU",
   "tags": []
 }
